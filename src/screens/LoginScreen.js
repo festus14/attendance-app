@@ -4,7 +4,6 @@ import {AppStyles} from '../AppStyles';
 
 class LoginScreen extends Component {
   state = {
-    loading: true,
     email: '',
     password: '',
   };
@@ -16,19 +15,19 @@ class LoginScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Sign In</Text>
+        <Text> Sign In </Text>{' '}
         <View>
           <TextInput
             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
             placeholder="Enter Name"
           />
-        </View>
+        </View>{' '}
         <View>
           <TextInput secureTextEntry={true} placeholder="Password" />
-        </View>
+        </View>{' '}
         <View>
-          <Button title="Log in" onPress={() => this.onPressLogin()} />
-        </View>
+          <Button title="Log in" onPress={() => this.onPressLogin()} />{' '}
+        </View>{' '}
       </View>
     );
   }

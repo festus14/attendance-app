@@ -1,9 +1,5 @@
 import { Platform, StyleSheet, Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-const SCREEN_WIDTH = width < height ? width : height;
-const numColumns = 2;
-
 export const AppStyles = {
     color: {
         main: '#5ea23a',
@@ -56,11 +52,6 @@ export const AppIcon = {
         tintColor: AppStyles.color.tint,
         width: 25,
         height: 25,
-    },
-    images: {
-        home: require('../assets/icons/home.png'),
-        defaultUser: require('../assets/icons/default_user.jpg'),
-        logout: require('../assets/icons/shutdown.png'),
     },
 };
 
