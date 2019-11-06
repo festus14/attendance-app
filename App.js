@@ -1,26 +1,20 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import LoginScreen from './src/screens/LoginScreen';
+// import LoginScreen from './src/screens/LoginScreen';
+// import HomeScreen from './src/screens/HomeScreen';
+import AppNavigation from './src/navigations/AppNavigation';
 
 const App = () => {
   return (
-    <>
-      <View>
-        <LoginScreen />
-      </View>{' '}
-    </>
+    <AppNavigation />
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    marginRight: 10,
+  },
+});
 
 export default App;
