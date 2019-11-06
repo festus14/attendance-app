@@ -24,17 +24,25 @@ class LoginScreen extends Component {
   }
 
   onPressLogin = () => {
-    console.warn('Im Logged In');
+    const {email, password} = this.state;
+    if (email.length <= 0 || password.length <= 0) {
+      alert('Please fill out the required fields.');
+      return;
+    }
+    this.props.navigation.navigate('App');
+    // _signInAsync = async () => {
+    //   await AsyncStorage.setItem('userToken', 'abc');
+    //   this.props.navigation.navigate('App');
+    // };
   };
 
   onPressSubmitForgotPassword = () => {
-    console.warn('I submitted forgot password');
-  };
-
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
-    console.warn('I got here');
+    const {email} = this.state;
+    if (email.length <= 0) {
+      alert('Please fill out the required fields.');
+      return;
+    }
+    this.props.navigation.navigate('Auth');
   };
 
   render() {
@@ -71,7 +79,7 @@ class LoginScreen extends Component {
             style={styles.loginContainer}
             onPress={
               this.state.displayPassword
-                ? this._signInAsync
+                ? () => this.onPressLogin()
                 : () => this.onPressSubmitForgotPassword()
             }>
             <Text style={styles.loginText}>
@@ -96,6 +104,10 @@ class LoginScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  or: {
     fontFamily: AppStyles.fontName.main,
     color: 'black',
     marginTop: 40,
@@ -113,11 +125,27 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: 20,
   },
-  body: {
-    height: 42,
-    paddingLeft: 20,
-    paddingRight: 20,
+  content: {
+    paddingLeft: 50,
+    paddingRight: 50,
+    textAlign: 'center',
+    fontSize: AppStyles.fontSize.content,
     color: AppStyles.color.text,
+  },
+  loginContainer: {
+    width: 250,
+    backgroundColor: AppStyles.color.tint,
+    borderRadius: AppStyles.borderRadius.main,
+    padding: 10,
+    marginTop: 30,
+  },
+  loginText: {
+    color: AppStyles.color.white,
+    textAlign: 'center',
+  },
+  placeholder: {
+    fontFamily: AppStyles.fontName.text,
+    color: 'red',
   },
   InputContainer: {
     width: AppStyles.textInputWidth.main,
@@ -127,16 +155,21 @@ const styles = StyleSheet.create({
     borderColor: AppStyles.color.grey,
     borderRadius: AppStyles.borderRadius.main,
   },
-  loginContainer: {
+  body: {
+    height: 42,
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: AppStyles.color.text,
+  },
+  facebookContainer: {
     width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.tint,
+    backgroundColor: AppStyles.color.facebook,
     borderRadius: AppStyles.borderRadius.main,
     padding: 10,
     marginTop: 30,
   },
-  loginText: {
+  facebookText: {
     color: AppStyles.color.white,
-    textAlign: 'center',
   },
 });
 

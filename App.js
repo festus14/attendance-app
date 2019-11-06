@@ -6,9 +6,7 @@ import {StyleSheet, View} from 'react-native';
 import AppNavigation from './src/navigations/AppNavigation';
 
 const App = () => {
-  return (
-    <AppNavigation />
-  );
+  return <AppNavigation />;
 };
 
 const styles = StyleSheet.create({

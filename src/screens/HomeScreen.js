@@ -9,21 +9,26 @@ import {
 import {AppStyles} from '../AppStyles';
 
 export default class HomeScreen extends Component {
-  
+  static navigationOptions = {
+    header: null,
+  };
+
   _showUserDetails = () => {
     this.props.navigation.navigate('UserDetails');
   };
 
   _signOutAsync = async () => {
-    await AsyncStorage.clear();
+    // await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>This is the App Home</Text>
-        <Text>
+        <Text style={[styles.title, styles.leftTitle]}>
+          This is the App Home
+        </Text>
+        <Text style={styles.body}>
           This Page Should be where the barcode will show for admin tab and bar
           code scanner will show for employees after sign in
         </Text>
@@ -32,7 +37,9 @@ export default class HomeScreen extends Component {
           style={styles.loginContainer}>
           <Text style={styles.loginText}>Go to user details</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={this._signOutAsync}>
+        <TouchableOpacity
+          onPress={this._signOutAsync}
+          style={styles.loginContainer}>
           <Text style={styles.loginText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
@@ -42,6 +49,10 @@ export default class HomeScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  or: {
     fontFamily: AppStyles.fontName.main,
     color: 'black',
     marginTop: 40,
@@ -59,11 +70,27 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: 20,
   },
-  body: {
-    height: 42,
-    paddingLeft: 20,
-    paddingRight: 20,
+  content: {
+    paddingLeft: 50,
+    paddingRight: 50,
+    textAlign: 'center',
+    fontSize: AppStyles.fontSize.content,
     color: AppStyles.color.text,
+  },
+  loginContainer: {
+    width: 250,
+    backgroundColor: AppStyles.color.tint,
+    borderRadius: AppStyles.borderRadius.main,
+    padding: 10,
+    marginTop: 30,
+  },
+  loginText: {
+    color: AppStyles.color.white,
+    textAlign: 'center',
+  },
+  placeholder: {
+    fontFamily: AppStyles.fontName.text,
+    color: 'red',
   },
   InputContainer: {
     width: AppStyles.textInputWidth.main,
@@ -73,15 +100,19 @@ const styles = StyleSheet.create({
     borderColor: AppStyles.color.grey,
     borderRadius: AppStyles.borderRadius.main,
   },
-  loginContainer: {
+  body: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    color: AppStyles.color.text,
+  },
+  facebookContainer: {
     width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.tint,
+    backgroundColor: AppStyles.color.facebook,
     borderRadius: AppStyles.borderRadius.main,
     padding: 10,
     marginTop: 30,
   },
-  loginText: {
+  facebookText: {
     color: AppStyles.color.white,
-    textAlign: 'center',
   },
 });
