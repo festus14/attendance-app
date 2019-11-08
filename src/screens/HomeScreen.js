@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
 
+import {connect} from 'react-redux';
+
 export default class HomeScreen extends Component {
   static navigationOptions = {
     header: null,

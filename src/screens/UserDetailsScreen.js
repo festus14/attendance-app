@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
 
+import {connect} from 'react-redux';
+
 export default class UserDetailsScreen extends Component {
   _signOutAsync = async () => {
     // await AsyncStorage.clear();
@@ -17,21 +19,24 @@ export default class UserDetailsScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>View User Details</Text>
+        <Text style={[styles.title, styles.leftTitle]}>
+          {' '}
+          View User Details{' '}
+        </Text>{' '}
         <View style={styles.body}>
           <Text>
-            This is the HR page for viewing all the employee details. Also a
-            signout button will be somewhere here
-          </Text>
+            This is the HR page for viewing all the employee details.Also a
+            signout button will be somewhere here{' '}
+          </Text>{' '}
           <View>
             <TouchableOpacity
               onPress={this._signOutAsync}
               style={styles.loginContainer}>
-              <Text style={styles.loginText}>Sign out</Text>
-            </TouchableOpacity>
+              <Text style={styles.loginText}> Sign out </Text>{' '}
+            </TouchableOpacity>{' '}
             <StatusBar barStyle="default" />
-          </View>
-        </View>
+          </View>{' '}
+        </View>{' '}
       </View>
     );
   }

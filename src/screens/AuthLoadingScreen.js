@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
   ActivityIndicator,
   AsyncStorage,
@@ -6,10 +6,10 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+
 import {AppStyles} from '../AppStyles';
 
-
-export default class AuthLoadingScreen extends React.Component {
+export default class AuthLoadingScreen extends Component {s
   componentDidMount() {
     this._bootstrapAsync();
   }
@@ -41,7 +41,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-
-
-

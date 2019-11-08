@@ -5,13 +5,20 @@ import {StyleSheet, View} from 'react-native';
 // import HomeScreen from './src/screens/HomeScreen';
 import AppNavigation from './src/navigations/AppNavigation';
 
+import {Provider} from 'react-redux';
+import store from './src/store';
+
 const App = () => {
-  return <AppNavigation />;
+  return (
+    <Provider store={store}>
+      <AppNavigation style={styles.container} />
+    </Provider>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginRight: 10,
+    
   },
 });
 
