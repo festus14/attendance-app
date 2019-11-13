@@ -2,41 +2,56 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
+  TextInput,
   View,
   TouchableOpacity,
-  StatusBar,
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
 
-import {connect} from 'react-redux';
+export default class HomeScreen extends Component {
+  static navigationOptions = {
+    header: null,
+  };
 
-export default class UserDetailsScreen extends Component {
+  _showUserDetails = () => {
+    this.props.navigation.navigate('UserDetails');
+  };
+
   _signOutAsync = async () => {
     // await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
+  };
+
+  _goToBarCodeScanner = () => {
+    this.props.navigation.navigate('BarCodeScanner');
   };
 
   render() {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>
-          {' '}
-          View User Details{' '}
-        </Text>{' '}
-        <View style={styles.body}>
-          <Text>
-            This is the HR page for viewing all the employee details.Also a
-            signout button will be somewhere here{' '}
-          </Text>{' '}
-          <View>
-            <TouchableOpacity
-              onPress={this._signOutAsync}
-              style={styles.loginContainer}>
-              <Text style={styles.loginText}> Sign out </Text>{' '}
-            </TouchableOpacity>{' '}
-            <StatusBar barStyle="default" />
-          </View>{' '}
-        </View>{' '}
+          This is the App Home
+        </Text>
+        <Text style={styles.body}>
+          This page is where you choose to either scan the barcode, view-details
+          for employees, or This Page Should be where the barcode will show for
+          admin tab and bar code scanner will show for employees after sign in
+        </Text>
+        <TouchableOpacity
+          onPress={this._goToBarCodeScanner}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Click to scan bar-code</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._showUserDetails}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Go to user details</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._signOutAsync}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Sign Out</Text>
+        </TouchableOpacity>
       </View>
     );
   }

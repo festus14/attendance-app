@@ -1,8 +1,8 @@
 import { GET_USER_DETAIL, USER_LOADING } from './types';
 import axios from 'axios';
 
-export const getLogs = () => dispatch => {
-    dispatch(logLoading());
+export const getUserDetail = () => dispatch => {
+    dispatch(userLoading());
     axios.get('api/user_details').then(res =>
         dispatch({
             type: GET_USER_DETAIL,
