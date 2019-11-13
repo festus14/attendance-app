@@ -2,21 +2,17 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
   View,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
 
 import {connect} from 'react-redux';
 
-export default class HomeScreen extends Component {
+export default class BarCodeScanner extends Component {
   static navigationOptions = {
     header: null,
-  };
-
-  _showUserDetails = () => {
-    this.props.navigation.navigate('UserDetails');
   };
 
   _signOutAsync = async () => {
@@ -28,22 +24,11 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>
-          This is the App Home
+          This is the BarCode Scanner page
         </Text>
-        <Text style={styles.body}>
-          This Page Should be where the barcode will show for admin tab and bar
-          code scanner will show for employees after sign in
-        </Text>
-        <TouchableOpacity
-          onPress={this._showUserDetails}
-          style={styles.loginContainer}>
-          <Text style={styles.loginText}>Go to user details</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this._signOutAsync}
-          style={styles.loginContainer}>
-          <Text style={styles.loginText}>Sign Out</Text>
-        </TouchableOpacity>
+        <View style={styles.scannerBox}>
+          
+        </View>
       </View>
     );
   }
@@ -71,13 +56,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlign: 'left',
     marginLeft: 20,
-  },
-  content: {
-    paddingLeft: 50,
-    paddingRight: 50,
-    textAlign: 'center',
-    fontSize: AppStyles.fontSize.content,
-    color: AppStyles.color.text,
   },
   loginContainer: {
     width: 250,
@@ -107,14 +85,12 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: AppStyles.color.text,
   },
-  facebookContainer: {
-    width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.facebook,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  facebookText: {
-    color: AppStyles.color.white,
+  scannerBox: {
+    marginTop: 50,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: AppStyles.color.grey,
+    width: '80%',
+    height: '50%'
   },
 });

@@ -1,15 +1,7 @@
 import React, {Component} from 'react';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, AsyncStorage, StatusBar, View} from 'react-native';
 
-import {AppStyles} from '../AppStyles';
-
-export default class AuthLoadingScreen extends Component {s
+export default class AuthLoadingScreen extends Component {
   componentDidMount() {
     this._bootstrapAsync();
   }
@@ -33,11 +25,3 @@ export default class AuthLoadingScreen extends Component {s
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

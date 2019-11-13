@@ -55,9 +55,8 @@ class LoginScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>
-          {' '}
-          {this.state.displayPassword ? 'Sign In' : 'Forgot Password'}{' '}
-        </Text>{' '}
+          {this.state.displayPassword ? 'Sign In' : 'Forgot Password'}
+        </Text>
         <View style={styles.InputContainer}>
           <TextInput
             style={styles.body}
@@ -66,8 +65,8 @@ class LoginScreen extends Component {
             underlineColorAndroid="transparent"
             value={this.state.email}
             onChangeText={text => this.setState({email: text})}
-          />{' '}
-        </View>{' '}
+          />
+        </View>
         {this.state.displayPassword && (
           <View style={styles.InputContainer}>
             <TextInput
@@ -78,9 +77,9 @@ class LoginScreen extends Component {
               underlineColorAndroid="transparent"
               value={this.state.password}
               onChangeText={text => this.setState({password: text})}
-            />{' '}
+            />
           </View>
-        )}{' '}
+        )}
         <View>
           <TouchableOpacity
             style={styles.loginContainer}
@@ -90,9 +89,9 @@ class LoginScreen extends Component {
                 : () => this.onPressSubmitForgotPassword()
             }>
             <Text style={styles.loginText}>
-              {' '}
-              {this.state.displayPassword ? 'Login' : 'Submit'}{' '}
-            </Text>{' '}
+              
+              {this.state.displayPassword ? 'Login' : 'Submit'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.loginContainer}
@@ -100,11 +99,11 @@ class LoginScreen extends Component {
               this.setState({displayPassword: !this.state.displayPassword})
             }>
             <Text style={styles.loginText}>
-              {' '}
-              {this.state.displayPassword ? 'Forgot Password' : 'Login'}{' '}
-            </Text>{' '}
-          </TouchableOpacity>{' '}
-        </View>{' '}
+              
+              {this.state.displayPassword ? 'Forgot Password' : 'Login'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
