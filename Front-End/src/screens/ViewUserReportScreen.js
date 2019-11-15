@@ -2,21 +2,15 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
+  TextInput,
   View,
   TouchableOpacity,
-  StatusBar,
   BackHandler,
-  Linking,
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
-import {connect} from 'react-redux';
 
-export default class BarCodeScanner extends Component {
-  onSuccess = e => {
-    Linking.openURL(e.data).catch(err =>
-      console.error('An error occured', err),
-    );
-  };
+export default class HomeScreen extends Component {
+
   componentDidMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
@@ -31,8 +25,12 @@ export default class BarCodeScanner extends Component {
     );
   }
 
-  handleBackButtonClick = async () => {
-    await this.props.navigation.goBack();
+  handleBackButtonClick = () => {
+    this.props.navigation.goBack();
+  };
+
+  _showUserDetails = async () => {
+    this.props.navigation.navigate('UserDetails');
   };
 
   _signOutAsync = async () => {
@@ -40,13 +38,39 @@ export default class BarCodeScanner extends Component {
     this.props.navigation.navigate('Auth');
   };
 
+  _goToBarCodeScanner = () => {
+    this.props.navigation.navigate('BarCodeScanner');
+  };
+
+  _goToViewUserReport = () => {
+    this.props.navigation.navigate('ViewUserReport');
+  };
   render() {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>
-          This is the BarCode Scanner page{' '}
-        </Text>{' '}
-        <View style={styles.scannerBox}></View>{' '}
+          Reports
+        </Text>
+        <TouchableOpacity
+          onPress={this._goToBarCodeScanner}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Report by time</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._goToViewUserReport}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Absentism in a period</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._showUserDetails}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}>Present employees in a period</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={this._signOutAsync}
+          style={styles.loginContainer}>
+          <Text style={styles.loginText}> Number of  </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -56,7 +80,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    flexDirection: 'row',
   },
   or: {
     fontFamily: AppStyles.fontName.main,
@@ -75,6 +98,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlign: 'left',
     marginLeft: 20,
+  },
+  content: {
+    paddingLeft: 50,
+    paddingRight: 50,
+    textAlign: 'center',
+    fontSize: AppStyles.fontSize.content,
+    color: AppStyles.color.text,
   },
   loginContainer: {
     width: 250,
@@ -104,29 +134,14 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: AppStyles.color.text,
   },
-  scannerBox: {
-    marginTop: 50,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: AppStyles.color.grey,
-    width: '80%',
-    height: '50%',
+  facebookContainer: {
+    width: AppStyles.buttonWidth.main,
+    backgroundColor: AppStyles.color.facebook,
+    borderRadius: AppStyles.borderRadius.main,
+    padding: 10,
+    marginTop: 30,
   },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  cameraIcon: {
-    margin: 5,
-    height: 40,
-    width: 40,
-  },
-  bottomOverlay: {
-    position: 'absolute',
-    width: '100%',
-    flex: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  facebookText: {
+    color: AppStyles.color.white,
   },
 });

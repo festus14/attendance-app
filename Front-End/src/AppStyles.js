@@ -7,7 +7,7 @@ export const AppStyles = {
         title: '#464646',
         subtitle: '#545454',
         categoryTitle: '#161616',
-        tint: '#ff5a66',
+        tint: '#800020',
         description: '#bbbbbb',
         filterTitle: '#8a8a8a',
         starRating: '#2bdf85',
@@ -69,7 +69,7 @@ export const HeaderButtonStyle = StyleSheet.create({
         margin: 6,
     },
     rightButton: {
-        color: AppStyles.color.tint,
+        color: '#800020',
         marginRight: 10,
         fontWeight: 'normal',
         fontFamily: AppStyles.fontName.main,
@@ -79,7 +79,7 @@ export const HeaderButtonStyle = StyleSheet.create({
 export const ListStyle = StyleSheet.create({
     title: {
         fontSize: 16,
-        color: AppStyles.color.subtitle,
+        color: '#800020',
         fontFamily: AppStyles.fontName.bold,
         fontWeight: 'bold',
     },

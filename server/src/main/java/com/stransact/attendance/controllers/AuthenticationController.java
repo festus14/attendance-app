@@ -55,7 +55,7 @@ public class AuthenticationController {
     public ResponseEntity<SuccessResponse> createAuthToken(@Valid @RequestBody JwtRequest request) throws ResourceNotFoundException, ValidationException {
         User user = authenticate(request.getEmail(), request.getPassword());
 
-        final String token = jwtConfig.generateToken(user, 60);
+        final String token = jwtConfig.generateToken(user, 60 * 60 * 24 * 7 * 4);
         final Date expiry = jwtConfig.getExpirationDateFromToken(token);
         final String refreshToken = jwtConfig.getRefreshIdFromToken(token);
 

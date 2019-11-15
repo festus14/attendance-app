@@ -5,8 +5,10 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
+  BackHandler,
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
+import {alertNotification} from '../actions/index';
 
 import {connect} from 'react-redux';
 
@@ -16,16 +18,32 @@ export default class UserDetailsScreen extends Component {
     this.props.navigation.navigate('Auth');
   };
 
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick = () => {
+    // alertNotification();
+    // this.props.navigation.goBack();
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          
-          View User Details
-        </Text>
+        <Text style={[styles.title, styles.leftTitle]}>View User Details </Text>
         <View style={styles.body}>
           <Text>
-            This is the HR page for viewing all the employee details. Also a
+            This is the HR page for viewing all the employee details.Also a
             signout button will be somewhere here
           </Text>
           <View>

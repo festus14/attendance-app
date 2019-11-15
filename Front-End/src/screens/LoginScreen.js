@@ -5,8 +5,13 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Image,
+  BackHandler,
 } from 'react-native';
 import {AppStyles} from '../AppStyles';
+
+import deviceStorage from '../services/deviceStorage';
+import axios from 'axios';
 
 import {connect} from 'react-redux';
 
@@ -17,7 +22,6 @@ class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
       password: '',
@@ -25,18 +29,58 @@ class LoginScreen extends Component {
     };
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  changeDisplay = () => {
+    this.setState({
+      displayPassword: !this.state.displayPassword,
+      password: '',
+    });
+  };
+
+  handleBackButtonClick = () => {
+    if (!this.state.displayPassword) {
+      this.changeDisplay();
+      return true;
+    }
+  };
+
   onPressLogin = () => {
     const {email, password} = this.state;
-    if (email.length <= 0 || password.length <= 0) {
-      alert('Please fill out the required fields.');
-      return;
-    }
+
     this.props.navigation.navigate('App');
-    // _signInAsync = async () => {
-    //   await AsyncStorage.setItem('userToken', 'abc');
-    //   this.props.navigation.navigate('App');
-    // };
-  };
+
+    // if (email.length <= 0 || password.length <= 0) {
+    //   alert('Please fill out the required fields.');
+    //   return;
+    // }
+
+  //   axios
+  //     .post('http://localhost:8080/api/v1/auth', {
+  //       email: email,
+  //       password: password,
+  //     })
+  //     .then(response => {
+  //       deviceStorage.saveItem('id_token', response.data.token);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+    
+  //   // this.props.navigation.navigate('App');
+  // };
 
   onPressSubmitForgotPassword = () => {
     const {email} = this.state;
@@ -45,16 +89,19 @@ class LoginScreen extends Component {
       return;
     }
     // this.props.navigation.navigate('Auth');
-    this.setState({
-      displayPassword: !this.state.displayPassword,
-      password: '',
-    });
+    this.changeDisplay;
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
+        <View>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/icons/Logo2.png')}
+          />
+        </View>
+        <Text style={styles.title}>
           {this.state.displayPassword ? 'Sign In' : 'Forgot Password'}
         </Text>
         <View style={styles.InputContainer}>
@@ -89,7 +136,6 @@ class LoginScreen extends Component {
                 : () => this.onPressSubmitForgotPassword()
             }>
             <Text style={styles.loginText}>
-              
               {this.state.displayPassword ? 'Login' : 'Submit'}
             </Text>
           </TouchableOpacity>
@@ -99,7 +145,6 @@ class LoginScreen extends Component {
               this.setState({displayPassword: !this.state.displayPassword})
             }>
             <Text style={styles.loginText}>
-              
               {this.state.displayPassword ? 'Forgot Password' : 'Login'}
             </Text>
           </TouchableOpacity>
@@ -125,7 +170,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: AppStyles.color.tint,
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 5,
   },
   leftTitle: {
     alignSelf: 'stretch',
@@ -168,15 +213,12 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: AppStyles.color.text,
   },
-  facebookContainer: {
-    width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.facebook,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  facebookText: {
-    color: AppStyles.color.white,
+  logo: {
+    marginBottom: 10,
+    marginTop: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 });
 
