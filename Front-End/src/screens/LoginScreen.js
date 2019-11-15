@@ -80,7 +80,7 @@ class LoginScreen extends Component {
   //     });
     
   //   // this.props.navigation.navigate('App');
-  // };
+  };
 
   onPressSubmitForgotPassword = () => {
     const {email} = this.state;
