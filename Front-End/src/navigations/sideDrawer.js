@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {AppStyles} from '../AppStyles';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { AppStyles } from '../AppStyles';
 
 
 export const Drawer = props => {
@@ -22,8 +22,12 @@ export const Drawer = props => {
     props.navigation.navigate('ViewUserReport');
   };
 
+  _goToGeneratorPage = () => {
+    props.navigation.navigate('GeneratorScreen')
+  }
+
   return (
-    <View style={{backgroundColor: '#800020', height: '100%', width: '100%'}}>
+    <View style={{ backgroundColor: '#800020', height: '100%', width: '100%' }}>
       <Text
         style={{
           color: 'white',
@@ -38,17 +42,22 @@ export const Drawer = props => {
       <TouchableOpacity
         onPress={_goToBarCodeScanner}
         style={styles.loginContainer}>
-        <Text style={styles.loginText}>Click to scan barcode</Text>
+        <Text style={styles.loginText}>Scan barcode</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_goToViewUserReport}
         style={styles.loginContainer}>
-        <Text style={styles.loginText}>View users report</Text>
+        <Text style={styles.loginText}>Users report</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_showUserDetails}
         style={styles.loginContainer}>
-        <Text style={styles.loginText}>Go to user details</Text>
+        <Text style={styles.loginText}>User details</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={_goToGeneratorPage}
+        style={styles.loginContainer}>
+        <Text style={styles.loginText}>Go to Generator Screen</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={_signOutAsync} style={styles.loginContainer}>
         <Text style={styles.loginText}> Sign Out </Text>
