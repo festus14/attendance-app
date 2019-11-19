@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import {AppStyles} from '../../AppStyles';
+import {AppStyles} from '../../utility/AppStyles';
 import Sidebar from 'react-native-sidebar';
 import userImage from '../../../assets/icons/man-user.png';
 import {Drawer} from "../../navigations/sideDrawer"

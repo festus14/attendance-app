@@ -10,7 +10,8 @@ import {
   Image,
 } from 'react-native';
 import {HomeHeader} from '../components/Headers/HomeHeader';
-import {Drawer} from '../navigations/sideDrawer';
+import Drawer from '../navigations/sideDrawer';
+import {logOut} from '../actions/AuthAction';
 
 export default class HomeScreen extends Component {
   static navigationOptions = ({navigation}) => ({
@@ -73,9 +74,10 @@ export default class HomeScreen extends Component {
           drawerPosition="left"
           style={{flex: 1}}
           ref={'DRAWER'}
-          renderNavigationView={() => Drawer(this.props)}
+          renderNavigationView={() => Drawer}
         />
       </View>
     );
   }
 }
+

@@ -7,7 +7,7 @@ import {
   StatusBar,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 import {alertNotification} from '../actions/index';
 
 import {connect} from 'react-redux';
@@ -40,7 +40,10 @@ export default class UserDetailsScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>View User Details </Text>
+        <Text style={[styles.title, styles.leftTitle]}>
+          
+          View User Details
+        </Text>
         <View style={styles.body}>
           <Text>
             This is the HR page for viewing all the employee details.Also a

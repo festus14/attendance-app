@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
 import {ActivityIndicator, StatusBar, View} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import { connect } from 'react-redux';
+import { getToken } from '../actions/AuthAction';
 
-export default class AuthLoadingScreen extends Component {
-  componentDidMount() {
-    this._bootstrapAsync();
+class AuthLoadingScreen extends Component {
+  async componentDidMount() {
+    let token = await this.props.getToken();
+    this.props.navigation.navigate(token ? 'App' : 'Auth');
   }
-
-  _bootstrapAsync = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
-  };
 
   render() {
     return (
@@ -22,3 +18,9 @@ export default class AuthLoadingScreen extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  getToken: () => dispatch(getToken()),
+})
+
+export default connect(null, mapDispatchToProps)(AuthLoadingScreen)

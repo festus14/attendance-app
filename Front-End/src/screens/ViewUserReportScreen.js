@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 
 export default class HomeScreen extends Component {
-
   componentDidMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
@@ -47,13 +46,11 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          Reports
-        </Text>
+        <Text style={[styles.title, styles.leftTitle]}>Reports </Text>
         <TouchableOpacity
           onPress={this._goToReportsByTime}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}>Report by time</Text>
+          <Text style={styles.loginText}> Report by time </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this._goToAbsentismsByTime}

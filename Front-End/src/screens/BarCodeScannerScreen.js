@@ -39,11 +39,6 @@ export default class BarCodeScanner extends Component {
     await this.props.navigation.goBack();
   };
 
-  _signOutAsync = async () => {
-    // await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
-
   render() {
     return (
       <QRCodeScanner

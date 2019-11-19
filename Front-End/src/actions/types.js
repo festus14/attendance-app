@@ -1,5 +1,6 @@
-export const GET_LOGS = 'GET_LOGS';
-export const POST_LOG = 'POST_LOG';
+export const SET_LOGS = 'SET_LOGS';
 export const LOG_LOADING = 'LOG_LOADING';
-export const GET_USER_DETAIL = 'GET_USER_DETAIL';
+export const SET_USER_DETAIL = 'SET_USER_DETAIL';
 export const USER_LOADING = 'USER_LOADING';
+export const SET_TOKEN = 'SET_TOKEN';
+export const AUTH_LOADING = 'AUTH_LOADING';
