@@ -8,12 +8,10 @@ import {
   Image,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
-
-import deviceStorage from '../services/deviceStorage';
-import axios from 'axios';
+import {AppStyles} from '../utility/AppStyles';
 
 import {connect} from 'react-redux';
+import { logIn } from '../actions/AuthAction';
 
 class LoginScreen extends Component {
   static navigationOptions = {
@@ -26,6 +24,7 @@ class LoginScreen extends Component {
       email: '',
       password: '',
       displayPassword: true,
+      error: ''
     };
   }
 
@@ -57,30 +56,31 @@ class LoginScreen extends Component {
     }
   };
 
-  onPressLogin = () => {
+  onPressLogin = async () => {
     const {email, password} = this.state;
 
-    this.props.navigation.navigate('App');
+    if (email.length <= 0 || password.length <= 0) {
+      alert('Please fill out the required fields.');
+      return;
+    }
 
-    // if (email.length <= 0 || password.length <= 0) {
-    //   alert('Please fill out the required fields.');
-    //   return;
-    // }
+    let data = {
+      email,
+      password,
+    };
 
-  //   axios
-  //     .post('http://localhost:8080/api/v1/auth', {
-  //       email: email,
-  //       password: password,
-  //     })
-  //     .then(response => {
-  //       deviceStorage.saveItem('id_token', response.data.token);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-    
-  //   // this.props.navigation.navigate('App');
+    let error = await this.props.logIn(data);
+
+    if (error) {
+      this.openError(error)
+    } else {
+      this.props.navigation.navigate('App')
+    }
   };
+
+  openError = (error) => {
+    this.setState({ error })
+  }
 
   onPressSubmitForgotPassword = () => {
     const {email} = this.state;
@@ -93,6 +93,7 @@ class LoginScreen extends Component {
   };
 
   render() {
+    const { email, password, displayPassword, error } = this.state;
     return (
       <View style={styles.container}>
         <View>
@@ -101,8 +102,9 @@ class LoginScreen extends Component {
             source={require('../../assets/icons/Logo2.png')}
           />
         </View>
+        <Text>{error}</Text>
         <Text style={styles.title}>
-          {this.state.displayPassword ? 'Sign In' : 'Forgot Password'}
+          {displayPassword ? 'Sign In' : 'Forgot Password'}
         </Text>
         <View style={styles.InputContainer}>
           <TextInput
@@ -110,11 +112,11 @@ class LoginScreen extends Component {
             placeholder="Enter e-mail"
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
-            value={this.state.email}
+            value={email}
             onChangeText={text => this.setState({email: text})}
           />
         </View>
-        {this.state.displayPassword && (
+        {displayPassword && (
           <View style={styles.InputContainer}>
             <TextInput
               style={styles.body}
@@ -122,7 +124,7 @@ class LoginScreen extends Component {
               placeholder="Password"
               placeholderTextColor={AppStyles.color.grey}
               underlineColorAndroid="transparent"
-              value={this.state.password}
+              value={password}
               onChangeText={text => this.setState({password: text})}
             />
           </View>
@@ -131,21 +133,21 @@ class LoginScreen extends Component {
           <TouchableOpacity
             style={styles.loginContainer}
             onPress={
-              this.state.displayPassword
+              displayPassword
                 ? () => this.onPressLogin()
                 : () => this.onPressSubmitForgotPassword()
             }>
             <Text style={styles.loginText}>
-              {this.state.displayPassword ? 'Login' : 'Submit'}
+              {displayPassword ? 'Login' : 'Submit'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.loginContainer}
             onPress={() =>
-              this.setState({displayPassword: !this.state.displayPassword})
+              this.setState({displayPassword: !displayPassword})
             }>
             <Text style={styles.loginText}>
-              {this.state.displayPassword ? 'Forgot Password' : 'Login'}
+              {displayPassword ? 'Forgot Password' : 'Login'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -222,4 +224,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+const mapDispatchToProps = dispatch => ({
+  logIn: (data) => dispatch(logIn(data)),
+});
+
+export default connect(null, mapDispatchToProps)(LoginScreen);

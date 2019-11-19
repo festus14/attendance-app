@@ -1,19 +1,22 @@
-import { SET_LOGS, LOG_LOADING } from '../../actions/types';
+import { SET_TOKEN, AUTH_LOADING } from '../../actions/types';
 
 const initialState = {
-    logs: [],
+    token: null,
+    user: null,
+    expiry: null,
+    refreshToken: null,
     loading: false,
 };
 
 export default function(state = initialState, action) {
     switch (action.type) {
-        case SET_LOGS:
+        case SET_TOKEN:
             return {
                 ...state,
-                logs: action.payload,
+                ...action.payload,
                 loading: false,
             };
-        case LOG_LOADING:
+        case AUTH_LOADING:
             return {
                 ...state,
                 loading: true,

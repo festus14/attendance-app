@@ -1,17 +1,15 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
+import {connect} from 'react-redux';
+import {logOut} from '../actions/AuthAction';
 
+const Drawer = props => {
 
-export const Drawer = props => {
+  // console.warn('Drawer logOut Props:', props.logOut)
 
   _showUserDetails = () => {
     props.navigation.navigate('UserDetails');
-  };
-
-  _signOutAsync = async () => {
-    // await AsyncStorage.clear();
-    props.navigation.navigate('Auth');
   };
 
   _goToBarCodeScanner = () => {
@@ -50,7 +48,7 @@ export const Drawer = props => {
         style={styles.loginContainer}>
         <Text style={styles.loginText}>Go to user details</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={_signOutAsync} style={styles.loginContainer}>
+      <TouchableOpacity onPress={logOut} style={styles.loginContainer}>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
     </View>
@@ -119,3 +117,12 @@ const styles = StyleSheet.create({
     color: AppStyles.color.text,
   },
 });
+
+export default Drawer;
+
+// const mapDispatchToProps = dispatch => ({
+//   logOut: () => dispatch(logOut()),
+// });
+
+// export default connect(null, mapDispatchToProps)(Drawer);
+

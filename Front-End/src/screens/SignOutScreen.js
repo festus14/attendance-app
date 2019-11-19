@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 
 import {connect} from 'react-redux';
 
@@ -19,13 +19,13 @@ export default class SignOutScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>Sign Out</Text>
+        <Text style={[styles.title, styles.leftTitle]}> Sign Out </Text>
         <View>
-          <Text>Are you sure you want to sign out?</Text>
+          <Text> Are you sure you want to sign out ? </Text>
           <TouchableOpacity
             onPress={this._signOutAsync}
             style={styles.loginContainer}>
-            <Text style={styles.loginText}>Sign Out</Text>
+            <Text style={styles.loginText}> Sign Out </Text>
           </TouchableOpacity>
         </View>
       </View>

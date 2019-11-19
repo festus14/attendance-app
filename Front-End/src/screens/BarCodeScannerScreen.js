@@ -8,7 +8,7 @@ import {
   BackHandler,
   Linking,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 import {connect} from 'react-redux';
 
 export default class BarCodeScanner extends Component {
@@ -44,9 +44,9 @@ export default class BarCodeScanner extends Component {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>
-          This is the BarCode Scanner page{' '}
-        </Text>{' '}
-        <View style={styles.scannerBox}></View>{' '}
+          This is the BarCode Scanner page
+        </Text>
+        <View style={styles.scannerBox}> </View>
       </View>
     );
   }

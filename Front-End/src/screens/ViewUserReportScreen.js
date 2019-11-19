@@ -7,10 +7,9 @@ import {
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 
 export default class HomeScreen extends Component {
-
   componentDidMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
@@ -48,28 +47,26 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          Reports
-        </Text>
+        <Text style={[styles.title, styles.leftTitle]}>Reports </Text>
         <TouchableOpacity
           onPress={this._goToBarCodeScanner}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}>Report by time</Text>
+          <Text style={styles.loginText}> Report by time </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this._goToViewUserReport}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}>Absentism in a period</Text>
+          <Text style={styles.loginText}> Absentism in a period </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this._showUserDetails}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}>Present employees in a period</Text>
+          <Text style={styles.loginText}> Present employees in a period </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this._signOutAsync}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}> Number of  </Text>
+          <Text style={styles.loginText}> Number of </Text>
         </TouchableOpacity>
       </View>
     );

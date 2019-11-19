@@ -28,6 +28,6 @@ export default createAppContainer(
         App: AppStack,
         Auth: AuthStack,
     }, {
-        initialRouteName: 'Auth',
+        initialRouteName: 'AuthLoading',
     }, ),
 );
