@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,15 +8,19 @@ import {
   BackHandler,
   Linking,
 } from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
-import {connect} from 'react-redux';
+import { AppStyles } from '../AppStyles';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { connect } from 'react-redux';
 
 export default class BarCodeScanner extends Component {
-  onSuccess = e => {
-    Linking.openURL(e.data).catch(err =>
-      console.error('An error occured', err),
-    );
-  };
+
+  onSuccess = (e) => {
+    console.log(e)
+    Linking
+      .openURL(e.data)
+      .catch(err => console.error('An error occured', err));
+  }
+
   componentDidMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
@@ -35,98 +39,34 @@ export default class BarCodeScanner extends Component {
     await this.props.navigation.goBack();
   };
 
-  _signOutAsync = async () => {
-    // await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
-
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          This is the BarCode Scanner page
-        </Text>
-        <View style={styles.scannerBox}> </View>
-      </View>
+      <QRCodeScanner
+        onRead={this.onSuccess}
+        bottomContent={
+          <Text style={styles.buttonText}>Scan the barcode on the screen</Text>
+        }
+      />
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  centerText: {
     flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
+    fontSize: 18,
+    padding: 32,
+    color: '#777',
   },
-  or: {
-    fontFamily: AppStyles.fontName.main,
-    color: 'black',
-    marginTop: 40,
-    marginBottom: 10,
+  textBold: {
+    fontWeight: '500',
+    color: '#000',
   },
-  title: {
-    fontSize: AppStyles.fontSize.title,
-    fontWeight: 'bold',
-    color: AppStyles.color.tint,
-    marginTop: 20,
-    marginBottom: 20,
+  buttonText: {
+    fontSize: 21,
+    color: '#800020',
   },
-  leftTitle: {
-    alignSelf: 'stretch',
-    textAlign: 'left',
-    marginLeft: 20,
-  },
-  loginContainer: {
-    width: 250,
-    backgroundColor: AppStyles.color.tint,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  loginText: {
-    color: AppStyles.color.white,
-    textAlign: 'center',
-  },
-  placeholder: {
-    fontFamily: AppStyles.fontName.text,
-    color: 'red',
-  },
-  InputContainer: {
-    width: AppStyles.textInputWidth.main,
-    marginTop: 30,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: AppStyles.color.grey,
-    borderRadius: AppStyles.borderRadius.main,
-  },
-  body: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: AppStyles.color.text,
-  },
-  scannerBox: {
-    marginTop: 50,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: AppStyles.color.grey,
-    width: '80%',
-    height: '50%',
-  },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  cameraIcon: {
-    margin: 5,
-    height: 40,
-    width: 40,
-  },
-  bottomOverlay: {
-    position: 'absolute',
-    width: '100%',
-    flex: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+  buttonTouchable: {
+    padding: 16,
+  }
 });

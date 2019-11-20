@@ -28,45 +28,44 @@ export default class HomeScreen extends Component {
     this.props.navigation.goBack();
   };
 
-  _showUserDetails = async () => {
-    this.props.navigation.navigate('UserDetails');
+  _goToPresntTimesByTime = () => {
+    this.props.navigation.navigate('NumberOfPresentTimes');
   };
 
-  _signOutAsync = async () => {
-    // await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
+  _goToNumberOfHoursWorked = () => {
+    this.props.navigation.navigate('NumberOfHoursWorkedInAPeriod');
+  }
+
+  _goToReportsByTime = () => {
+    this.props.navigation.navigate('ReportByTime');
   };
 
-  _goToBarCodeScanner = () => {
-    this.props.navigation.navigate('BarCodeScanner');
-  };
-
-  _goToViewUserReport = () => {
-    this.props.navigation.navigate('ViewUserReport');
+  _goToAbsentismsByTime = () => {
+    this.props.navigation.navigate('NumberOfAbsentTimes');
   };
   render() {
     return (
       <View style={styles.container}>
         <Text style={[styles.title, styles.leftTitle]}>Reports </Text>
         <TouchableOpacity
-          onPress={this._goToBarCodeScanner}
+          onPress={this._goToReportsByTime}
           style={styles.loginContainer}>
           <Text style={styles.loginText}> Report by time </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={this._goToViewUserReport}
+          onPress={this._goToAbsentismsByTime}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}> Absentism in a period </Text>
+          <Text style={styles.loginText}>Number of Absentisms in a period</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={this._showUserDetails}
+          onPress={this._goToPresntTimesByTime}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}> Present employees in a period </Text>
+          <Text style={styles.loginText}>Number of times present in a period</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={this._signOutAsync}
+          onPress={this._goToNumberOfHoursWorked}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}> Number of </Text>
+          <Text style={styles.loginText}>Number of hours worked in a period</Text>
         </TouchableOpacity>
       </View>
     );

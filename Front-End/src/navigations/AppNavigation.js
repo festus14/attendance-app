@@ -8,6 +8,11 @@ import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import SignOutScreen from '../screens/SignOutScreen';
 import BarCodeScannerScreen from '../screens/BarCodeScannerScreen';
 import ViewUserReportScreen from '../screens/ViewUserReportScreen';
+import ReportsByTimeScreen from "../screens/ReportsByTimeScreen";
+import AbsentismReportScreen from "../screens/AbsentismReportScreen";
+import PresentTimesReportScreen from "../screens/PresentTimesReportScreen";
+import HoursWorkedScreen from "../screens/HoursWorkedScreen";
+import BarcodeGeneratorScreen from "../screens/BarcodeGeneratorScreen";
 
 const AppStack = createStackNavigator({
     Home: HomeScreen,
@@ -17,6 +22,11 @@ const AppStack = createStackNavigator({
     Home: HomeScreen,
     ViewUserReport: ViewUserReportScreen,
     SignOut: SignOutScreen,
+    ReportByTime: ReportsByTimeScreen,
+    NumberOfAbsentTimes: AbsentismReportScreen,
+    NumberOfPresentTimes: PresentTimesReportScreen,
+    NumberOfHoursWorkedInAPeriod: HoursWorkedScreen,
+    GeneratorScreen: BarcodeGeneratorScreen
 });
 
 
