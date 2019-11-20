@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import {HomeHeader} from '../components/Headers/HomeHeader';
 import Drawer from '../navigations/sideDrawer';
+import {connect} from 'react-redux';
 import {logOut} from '../actions/AuthAction';
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
   static navigationOptions = ({navigation}) => ({
     header: null,
   });
@@ -81,3 +82,8 @@ export default class HomeScreen extends Component {
   }
 }
 
+const mapDispatchToProps = dispatch => ({
+  logOut: () => dispatch(logOut()),
+});
+
+export default connect(null, mapDispatchToProps)(HomeScreen);

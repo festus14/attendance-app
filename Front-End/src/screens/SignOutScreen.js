@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 
 export default class SignOutScreen extends Component {
   _signOutAsync = async () => {
-    // await AsyncStorage.clear();
     this.props.navigation.navigate('Auth');
   };
 

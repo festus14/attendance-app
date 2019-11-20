@@ -1,12 +1,8 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {AppStyles} from '../utility/AppStyles';
-import {connect} from 'react-redux';
-import {logOut} from '../actions/AuthAction';
 
 const Drawer = props => {
-
-  // console.warn('Drawer logOut Props:', props.logOut)
 
   _showUserDetails = () => {
     props.navigation.navigate('UserDetails');
@@ -18,6 +14,11 @@ const Drawer = props => {
 
   _goToViewUserReport = () => {
     props.navigation.navigate('ViewUserReport');
+  };
+
+  signOut = () => {
+    // alert('Sign out pressed')
+    // props.navigation.navigate('SignOut');
   };
 
   return (
@@ -48,7 +49,7 @@ const Drawer = props => {
         style={styles.loginContainer}>
         <Text style={styles.loginText}>Go to user details</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={logOut} style={styles.loginContainer}>
+      <TouchableOpacity onPress={signOut} style={styles.loginContainer}>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
     </View>
@@ -120,9 +121,5 @@ const styles = StyleSheet.create({
 
 export default Drawer;
 
-// const mapDispatchToProps = dispatch => ({
-//   logOut: () => dispatch(logOut()),
-// });
 
-// export default connect(null, mapDispatchToProps)(Drawer);
 
