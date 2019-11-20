@@ -10,7 +10,7 @@ import {
   Modal
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AppStyles } from '../AppStyles';
+import { AppStyles } from '../utility/AppStyles';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from 'react-redux';
 

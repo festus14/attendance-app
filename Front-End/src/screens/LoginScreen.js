@@ -74,6 +74,7 @@ class LoginScreen extends Component {
     if (error) {
       this.openError(error)
     } else {
+      alert("oji")
       this.props.navigation.navigate('App')
     }
   };
