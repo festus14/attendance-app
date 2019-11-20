@@ -20,6 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+project.xcworkspace
 
 # Android/IntelliJ
 #
@@ -28,19 +29,20 @@ build/
 .gradle
 local.properties
 *.iml
+**/release/
 
 # node.js
 #
 node_modules/
 npm-debug.log
 yarn-error.log
-./package-lock.json
+package-lock.json
+yarn-lock.json
 
 # BUCK
 buck-out/
 \.buckd/
 *.keystore
-!debug.keystore
 
 # fastlane
 #
@@ -58,8 +60,7 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+Podfile.lock
 
-
-package-lock.json
-
-.json
+*/build/
+**/build/
