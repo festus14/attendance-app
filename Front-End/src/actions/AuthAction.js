@@ -20,18 +20,17 @@ export const logIn = ({ email, password }) => async dispatch => {
     }
 };
 
-export const refreshToken = (refreshToken, token) => async dispatch => {
+export const refreshToken = (refreshToken, oldAccessToken) => async dispatch => {
   try {
-    let res = await axios.post(`${APIURL}auth/refresh-token`, {refreshToken, token});
+    let res = await axios.post(`${APIURL}auth/refresh-token`, {refreshToken, oldAccessToken});
     console.warn(res.data.data);
     if (!res.data.success) {
-      return res.data.message;
+      return null;
     }
-    await setAuthAsync(res.data.data);
-    return '';
+    return res.data.data;
   } catch (error) {
     console.log(error);
-    return error.response.data.message;
+    return null;
   }
 };
 
@@ -79,11 +78,23 @@ export const authLoading = () => {
 export const getToken = () => async(dispatch, getState) => {
     
     let token = getState().authReducer.token;
-    console.warn('In getToken func', token)
-    if (!token) {
+    let expiry = getState().authReducer.expiry;
+    let refresh = getState().authReducer.refreshToken
+    if (!token || (expiry && new Date(expiry).getTime() < new Date().getTime())) {
         try {
-            token = await RNSecureKeyStore.get('token');
-            token = token ? JSON.parse(token).token : null;
+            if (expiry && new Date(expiry).getTime() < new Date().getTime()) {
+              token = await dispatch(refreshToken(refresh, token));
+            } else {
+                let tokenObject = await RNSecureKeyStore.get('token');
+                tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
+                token = tokenObject.token;
+                expiry = tokenObject.expiry;
+                refresh = tokenObject.refreshToken;
+
+                if (expiry && new Date(expiry).getTime() < new Date().getTime()) {
+                    token = await dispatch(refreshToken(refresh, token));
+                }
+            }
             console.warn(token)
         } catch (err) {
             console.warn(err);
