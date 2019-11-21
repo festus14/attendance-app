@@ -74,12 +74,7 @@ class LoginScreen extends Component {
     if (error) {
       this.openError(error)
     } else {
-<<<<<<< HEAD
       this.props.navigation.navigate('App');
-=======
-      alert("oji")
-      this.props.navigation.navigate('App')
->>>>>>> 78cff1a168a1c7b9ce3308690170b4e1f4b24063
     }
   };
 
