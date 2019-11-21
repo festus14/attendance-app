@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,18 +8,17 @@ import {
   BackHandler,
   Linking,
 } from 'react-native';
-import { AppStyles } from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 export default class BarCodeScanner extends Component {
-
-  onSuccess = (e) => {
-    console.log(e)
-    Linking
-      .openURL(e.data)
-      .catch(err => console.error('An error occured', err));
-  }
+  onSuccess = e => {
+    console.log(e);
+    Linking.openURL(e.data).catch(err =>
+      console.error('An error occured', err),
+    );
+  };
 
   componentDidMount() {
     BackHandler.addEventListener(
@@ -44,7 +43,10 @@ export default class BarCodeScanner extends Component {
       <QRCodeScanner
         onRead={this.onSuccess}
         bottomContent={
-          <Text style={styles.buttonText}>Scan the barcode on the screen</Text>
+          <Text style={styles.buttonText}>
+            
+            Scan the barcode on the screen
+          </Text>
         }
       />
     );
@@ -68,5 +70,5 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
-  }
+  },
 });

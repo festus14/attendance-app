@@ -11,10 +11,8 @@ import {
 } from 'react-native';
 import {HomeHeader} from '../components/Headers/HomeHeader';
 import Drawer from '../navigations/sideDrawer';
-import {connect} from 'react-redux';
-import {logOut} from '../actions/AuthAction';
 
-class HomeScreen extends Component {
+export default class HomeScreen extends Component {
   static navigationOptions = ({navigation}) => ({
     header: null,
   });
@@ -75,15 +73,9 @@ class HomeScreen extends Component {
           drawerPosition="left"
           style={{flex: 1}}
           ref={'DRAWER'}
-          renderNavigationView={() => Drawer}
+          renderNavigationView={() => Drawer(this.props)}
         />
       </View>
     );
   }
 }
-
-const mapDispatchToProps = dispatch => ({
-  logOut: () => dispatch(logOut()),
-});
-
-export default connect(null, mapDispatchToProps)(HomeScreen);
