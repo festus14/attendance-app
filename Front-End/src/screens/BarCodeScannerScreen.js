@@ -8,7 +8,10 @@ import {
   BackHandler,
   Linking,
 } from 'react-native';
+<<<<<<< HEAD
 import {AppStyles} from '../utility/AppStyles';
+=======
+>>>>>>> 78cff1a168a1c7b9ce3308690170b4e1f4b24063
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {connect} from 'react-redux';
 

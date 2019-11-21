@@ -36,8 +36,12 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+<<<<<<< HEAD
 package-lock.json
 yarn-lock.json
+=======
+Front-end/package-lock.json
+>>>>>>> 78cff1a168a1c7b9ce3308690170b4e1f4b24063
 
 # BUCK
 buck-out/

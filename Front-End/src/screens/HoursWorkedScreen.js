@@ -11,7 +11,11 @@ import {
     Picker
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+<<<<<<< HEAD
 import {AppStyles} from '../utility/AppStyles';
+=======
+import { AppStyles } from '../utility/AppStyles';
+>>>>>>> 78cff1a168a1c7b9ce3308690170b4e1f4b24063
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { connect } from 'react-redux';
 
