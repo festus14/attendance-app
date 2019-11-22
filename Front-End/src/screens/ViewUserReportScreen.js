@@ -28,20 +28,12 @@ export default class HomeScreen extends Component {
     this.props.navigation.goBack();
   };
 
-  _goToPresntTimesByTime = () => {
-    this.props.navigation.navigate('NumberOfPresentTimes');
-  };
-
-  _goToNumberOfHoursWorked = () => {
-    this.props.navigation.navigate('NumberOfHoursWorkedInAPeriod');
-  }
-
   _goToReportsByTime = () => {
     this.props.navigation.navigate('ReportByTime');
   };
 
-  _goToAbsentismsByTime = () => {
-    this.props.navigation.navigate('NumberOfAbsentTimes');
+  _goToUserLogsScreen = () => {
+    this.props.navigation.navigate('userScanLogs');
   };
   render() {
     return (
@@ -53,19 +45,9 @@ export default class HomeScreen extends Component {
           <Text style={styles.loginText}> Report by time </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={this._goToAbsentismsByTime}
+          onPress={this._goToUserLogsScreen}
           style={styles.loginContainer}>
-          <Text style={styles.loginText}>Number of Absentisms in a period</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this._goToPresntTimesByTime}
-          style={styles.loginContainer}>
-          <Text style={styles.loginText}>Number of times present in a period</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={this._goToNumberOfHoursWorked}
-          style={styles.loginContainer}>
-          <Text style={styles.loginText}>Number of hours worked in a period</Text>
+          <Text style={styles.loginText}> Report of user by time</Text>
         </TouchableOpacity>
       </View>
     );

@@ -8,11 +8,10 @@ export const logIn = ({ email, password }) => async dispatch => {
     dispatch(authLoading());
     try {
         let res = await axios.post(`${APIURL}auth/`, { email, password });
-        console.warn(res.data.data)
         if (!res.data.success) {
             return res.data.message;
         }
-        await setAuthAsync(res.data.data);
+        await dispatch(setAuth(res.data.data));
         return '';
     } catch (error) {
         console.log(error);
@@ -95,9 +94,7 @@ export const getToken = () => async(dispatch, getState) => {
                     token = await dispatch(refreshToken(refresh, token));
                 }
             }
-            console.warn(token)
         } catch (err) {
-            console.warn(err);
             token = null
         }
     }

@@ -1,6 +1,7 @@
 const initialState = {
     scanLog: [],
     loading: false,
+    success: false
 };
 
 export default function getAllScanLog(state = initialState, action) {
@@ -9,12 +10,14 @@ export default function getAllScanLog(state = initialState, action) {
             return {
                 ...state,
                 loading: true,
+                success: false
             };
         case "GET_ALL_SCAN_LOG_SUCCESS":
             return {
                 ...state,
                 loading: false,
-                scanLog: action.payload
+                success: true,
+                scanLog: action.payload.timeLogs
             };
         case "GET_ALL_SCAN_LOG_FAILURE":
             return {

@@ -1,25 +1,25 @@
 const initialState = {
-    scanResponse: [],
+    userScanLogs: [],
     loading: false,
     success: false
 };
 
-export default function sendBarcodeString(state = initialState, action) {
+export default function getUserScanLogs(state = initialState, action) {
     switch (action.type) {
-        case "SEND_BARCODE_STRING_STARTED":
+        case "GET_USER_SCAN_LOGS_STARTED":
             return {
                 ...state,
                 loading: true,
                 success: false
             };
-        case "SEND_BARCODE_STRING_SUCCESS":
+        case "GET_USER_SCAN_LOGS_SUCCESS":
             return {
                 ...state,
                 loading: false,
                 success: true,
-                scanResponse: action.payload
+                userScanLogs: action.payload
             };
-        case "SEND_BARCODE_STRING_FAILURE":
+        case "GET_USER_SCAN_LOGS_FAILURE":
             return {
                 ...state,
                 loading: false,

@@ -70,11 +70,10 @@ class LoginScreen extends Component {
     };
 
     let error = await this.props.logIn(data);
-
+    console.warn(error)
     if (error) {
       this.openError(error)
     } else {
-      alert("oji")
       this.props.navigation.navigate('App')
     }
   };

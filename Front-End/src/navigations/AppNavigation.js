@@ -9,9 +9,7 @@ import SignOutScreen from '../screens/SignOutScreen';
 import BarCodeScannerScreen from '../screens/BarCodeScannerScreen';
 import ViewUserReportScreen from '../screens/ViewUserReportScreen';
 import ReportsByTimeScreen from "../screens/ReportsByTimeScreen";
-import AbsentismReportScreen from "../screens/AbsentismReportScreen";
-import PresentTimesReportScreen from "../screens/PresentTimesReportScreen";
-import HoursWorkedScreen from "../screens/HoursWorkedScreen";
+import UserScanLogsScreen from "../screens/UserScanLogsScreen";
 import BarcodeGeneratorScreen from "../screens/BarcodeGeneratorScreen";
 
 const AppStack = createStackNavigator({
@@ -23,9 +21,7 @@ const AppStack = createStackNavigator({
     ViewUserReport: ViewUserReportScreen,
     SignOut: SignOutScreen,
     ReportByTime: ReportsByTimeScreen,
-    NumberOfAbsentTimes: AbsentismReportScreen,
-    NumberOfPresentTimes: PresentTimesReportScreen,
-    NumberOfHoursWorkedInAPeriod: HoursWorkedScreen,
+    userScanLogs: UserScanLogsScreen,
     GeneratorScreen: BarcodeGeneratorScreen
 });
 
@@ -39,5 +35,5 @@ export default createAppContainer(
         Auth: AuthStack,
     }, {
         initialRouteName: 'AuthLoading',
-    }, ),
+    }),
 );

@@ -1,6 +1,8 @@
 import { getAllScanLogSuccess, getAllScanLogFailure } from './getAllScanLog.js';
-import { setBarcodeStringSuccess, setBarcodeStringFailure } from './sendBarcodeString.js';
+import { sendBarcodeStringFailure, sendBarcodeStringSuccess } from './sendBarcodeString.js';
 import { getBarcodeStringSuccess, getBarcodeStringFailure } from './getBarcodeString.js';
+import { getAllUsersSuccess, getAllUsersFailure } from './getAllUsers.js';
+import { getUserScanLogsSuccess, getUserScanLogsFailure } from './getUserScanLogs.js';
 
 
 
@@ -13,44 +15,29 @@ export function successResponse(response, endPoint, requestMethod) {
     }
     console.log(endPointPrefix + " " + endPointSuffix);
     switch (endPointPrefix) {
-        case 'auth':
-            if (requestMethod === "delete") {
-                return async (dispatch) => {
-                    dispatch(deleteSessionSuccess(response.data.data));
-                    dispatch(deleteCurrentSession());
-                }
-            }
-
+        case 'barcode':
             return async (dispatch) => {
-                console.log(response.data.data.refreshToken)
-                dispatch(authSuccess(response.data));
-                await dispatch(startSession(response.data.data.token, response.data.data.refreshToken, response.data.data.expiry, response.data.data.user.id));
+                if (requestMethod === "get") {
+                    dispatch(getBarcodeStringSuccess(response.data.data));
+                }
+                else if (requestMethod === "post") {
+                    dispatch(sendBarcodeStringSuccess(response.data.data));
+                }
             }
+        case 'logs':
+            return (dispatch) => {
+                if (requestMethod === "post") {
+                    dispatch(getAllScanLogSuccess(response.data.data));
+                }
+                else if (requestMethod === "get") {
+                    dispatch(getUserScanLogsSuccess(response.data.data));
+                }
 
+            }
         case 'users':
-            if (!endPoint.startsWith("users/") && requestMethod === "get") {
-                return (dispatch) => {
-                    dispatch(getStaffDetailsSuccess(response.data.data));
-                }
-            }
-            else if (endPoint.startsWith("users/") && requestMethod === "get") {
-                return (dispatch) => {
-                    dispatch(getUserDetailsSuccess(response.data.data));
-                }
-            }
-            else if (requestMethod === "patch") {
-                return (dispatch) => {
-                    dispatch(editUserSuccess(response.data))
-                }
-            }
-            else if (requestMethod === "delete") {
-                return (dispatch) => {
-                    dispatch(deleteUserSuccess(response.data));
-                }
-            }
-            else if (requestMethod === "post") {
-                return (dispatch) => {
-                    dispatch(createUserSuccess(response.data))
+            return (dispatch) => {
+                if (requestMethod === "get") {
+                    dispatch(getAllUsersSuccess(response.data.data));
                 }
             }
         default:
@@ -61,40 +48,38 @@ export function successResponse(response, endPoint, requestMethod) {
 }
 
 export function failureResponse(error, endPoint, requestMethod) {
+    // alert("7")
     let endPointPrefix = endPoint.split('/')[0];
     let endPointSuffix = endPoint.split('/')[1];
     if (endPointSuffix !== "department" && endPointPrefix === "modules" && requestMethod === "get" && endPointSuffix !== undefined) {
         endPointSuffix = parseInt(endPointSuffix, 10);
     }
     switch (endPointPrefix) {
-        case 'auth':
-            if (requestMethod === "post") {
-                return (dispatch) => {
-                    dispatch(authFailure(error));
+        case 'barcode':
+            return async (dispatch) => {
+                if (requestMethod === "get") {
+                    alert(error)
+                    dispatch(getBarcodeStringFailure(error));
                 }
-            }
-            else if (requestMethod === "delete") {
-                return (dispatch) => {
-                    dispatch(deleteSessionFailure(error));
+                else if (requestMethod === "post") {
+                    console.warn(error)
+                    dispatch(sendBarcodeStringFailure(error));
                 }
             }
 
+        case 'logs':
+            return async (dispatch) => {
+                if (requestMethod === "post") {
+                    dispatch(getAllScanLogFailure(error));
+                }
+                else if (endPointSuffix === "user_logs") {
+                    dispatch(getUserScanLogsFailure(error));
+                }
+            }
         case 'users':
             return (dispatch) => {
-                if (requestMethod === "post") {
-                    dispatch(createUserFailure(error));
-                }
-                else if (!endPoint.startsWith("users/") && requestMethod === "get") {
-                    dispatch(getStaffDetailsFailure(error));
-                }
-                else if (endPoint.startsWith("users/") && requestMethod === "get") {
-                    dispatch(getUserDetailsFailure(error));
-                }
-                else if (requestMethod === "patch") {
-                    dispatch(editUserFailure(error));
-                }
-                else if (requestMethod === "delete") {
-                    dispatch(deleteUserFailure(error));
+                if (requestMethod === "get") {
+                    dispatch(getAllUsersFailure(error));
                 }
             }
         default:
