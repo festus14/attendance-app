@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { AppStyles } from '../utility/AppStyles';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 const Drawer = props => {
 
@@ -16,8 +18,8 @@ const Drawer = props => {
     props.navigation.navigate('ViewUserReport');
   };
 
-  signOut = () => {
-    props.navigation.navigate('SignOut');
+  _goToSignOut = () => {
+    props.navigation.navigate("SignOut");
   };
 
   _goToGeneratorPage = () => {
@@ -25,39 +27,44 @@ const Drawer = props => {
   }
 
   return (
-    <View style={{backgroundColor: '#800020', height: '100%', width: '100%'}}>
-      <Text
-        style={{
-          color: 'white',
-          fontSize: 20,
-          textAlign: 'center',
-          fontWeight: 'bold',
-          marginTop: '3%',
-          marginBottom: '7%',
-        }}>
-        Menu
-      </Text>
+    <View style={{ backgroundColor: '#800020', height: '100%', width: '100%', paddingTop: "15%" }}>
+      <Text style={{
+        color: "white", fontSize: 26, textAlign: "left",
+        paddingLeft: "5%", borderBottomWidth: 0.5, borderBottomColor: "grey",
+        paddingBottom: "5%", fontWeight: "bold", marginBottom: "10%"
+      }}>
+        Attendance</Text>
       <TouchableOpacity
         onPress={_goToBarCodeScanner}
         style={styles.loginContainer}>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
+         name="camera" size={40}></Icon>
         <Text style={styles.loginText}>Scan barcode</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_goToViewUserReport}
         style={styles.loginContainer}>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
+         name="retweet" size={40}></Icon>
         <Text style={styles.loginText}>Users report</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_showUserDetails}
         style={styles.loginContainer}>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
+         name="user" size={40}></Icon>
         <Text style={styles.loginText}>User details</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_goToGeneratorPage}
         style={styles.loginContainer}>
-        <Text style={styles.loginText}>Go to Generator Screen</Text>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
+         name="barcode" size={40}></Icon>
+        <Text style={styles.loginText}>Barcode Generator</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={signOut} style={styles.loginContainer}>
+      <TouchableOpacity onPress={_goToSignOut} style={styles.loginContainer}>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
+         name="power-off" size={40}></Icon>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
     </View>
@@ -90,23 +97,24 @@ const styles = StyleSheet.create({
   content: {
     paddingLeft: 50,
     paddingRight: 50,
-    textAlign: 'center',
+    textAlign: 'left',
     fontSize: AppStyles.fontSize.content,
     color: AppStyles.color.text,
   },
   loginContainer: {
-    width: '90%',
+    width: '100%',
     padding: 10,
-    marginTop: 30,
+    marginTop: 15,
     height: 40,
-    marginLeft: '3%',
-    marginRight: '3%',
-    backgroundColor: 'grey',
+    display: "flex",
+    flexDirection: "row"
   },
   loginText: {
     color: AppStyles.color.white,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: 'left',
+    fontSize: 16,
+    paddingRight: "5%"
+
   },
   placeholder: {
     fontFamily: AppStyles.fontName.text,

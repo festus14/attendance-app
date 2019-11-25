@@ -1,29 +1,25 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
-import {AppStyles} from '../../utility/AppStyles';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { AppStyles } from '../../utility/AppStyles';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Sidebar from 'react-native-sidebar';
 import userImage from '../../../assets/icons/man-user.png';
-import {Drawer} from "../../navigations/sideDrawer"
+import { Drawer } from "../../navigations/sideDrawer"
 
 export const HomeHeader = ({ onLeftPress }) => {
   return (
     <View style={[styles.container]}>
-      <TouchableOpacity
-        onPress={onLeftPress}>
-        <Image
-          source={userImage}
-          style={{
-            width: 30,
-            height: 30,
-            marginLeft: '3%',
-            marginTop: '6.5%',
-            borderRadius: 50,
-            borderColor: 'lightgray',
-            borderWidth: 2,
-            padding: '4%',
-            marginRight: '30%',
-          }}></Image>
-      </TouchableOpacity>
+      <View style={{ width: "30%", marginLeft: '3%', marginRight: "10%", alignContent:"center" }}>
+        <TouchableOpacity style={{width: "30%", marginLeft: '3%',
+            marginVertical: "18%",
+            marginRight: '30%'}}
+          onPress={onLeftPress}
+        >
+          <Icon style={{
+            textAlign: 'left', fontSize: 25}}
+            name="align-justify" size={40} color="grey" ></Icon>
+        </TouchableOpacity>
+      </View>
       <Text
         style={{
           marginTop: '4.5%',
@@ -44,6 +40,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     display: 'flex',
     flexDirection: 'row',
+    width: "100%"
   },
   or: {
     fontFamily: AppStyles.fontName.main,

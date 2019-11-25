@@ -71,7 +71,7 @@ class LoginScreen extends Component {
     };
 
     let error = await this.props.logIn(data);
-
+    console.warn(error)
     if (error) {
       this.openError(error)
     } else {
