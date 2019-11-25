@@ -44,19 +44,19 @@ class UserScanLogsScreen extends Component {
 			mode: 'date',
 			showStart: false,
 			showEnd: false,
-			users: [{"name":"user", "id": 0}],
+			users: [{ "name": "user", "id": 0 }],
 			getReportSubmitted: false,
 			modalVisible: false,
 			userId: 1,
 			reportGotten: false,
-			usersLog: {"name": "User user", "present": 0, "absent": 0, "hoursWorked": 0},
+			usersLog: { "name": "User user", "present": 0, "absent": 0, "hoursWorked": 0 },
 			startDateText: new Date().toDateString(),
-      endDateText: new Date().toDateString(),
-      startTimeText: new Date().toLocaleTimeString(),
-      endTimeText: new Date().toLocaleTimeString(),
-      type: "start",
-      startDateToSend: new Date().getTime(),
-      endDateToSend: new Date().getTime()
+			endDateText: new Date().toDateString(),
+			startTimeText: new Date().toLocaleTimeString(),
+			endTimeText: new Date().toLocaleTimeString(),
+			type: "start",
+			startDateToSend: new Date().getTime(),
+			endDateToSend: new Date().getTime()
 		}
 	}
 
@@ -77,6 +77,9 @@ class UserScanLogsScreen extends Component {
 				users: userInfo
 			});
 		}
+		else{
+			alert("An error occured while getting users: " + "\n" +this.props.allUsers.error.toString())
+		}
 	}
 
 	capitalizeFirstLetter = input => {
@@ -92,14 +95,14 @@ class UserScanLogsScreen extends Component {
 		});
 
 		if (this.state.mode === "date") {
-      this.setState({
-        startDateText: this.state.startDate.toDateString()
-      });
-    }
-    else if (this.state.mode === "time") {
-      this.setState({
-        startTimeText: this.state.startDate.toLocaleTimeString()
-      });
+			this.setState({
+				startDateText: this.state.startDate.toDateString()
+			});
+		}
+		else if (this.state.mode === "time") {
+			this.setState({
+				startTimeText: this.state.startDate.toLocaleTimeString()
+			});
 		}
 	}
 
@@ -111,15 +114,15 @@ class UserScanLogsScreen extends Component {
 		});
 
 		if (this.state.mode === "date") {
-      this.setState({
-        endDateText: this.state.endDate.toDateString()
-      });
-    }
-    else if (this.state.mode === "time") {
-      this.setState({
-        endTimeText: this.state.endDate.toLocaleTimeString()
-      });
-    }
+			this.setState({
+				endDateText: this.state.endDate.toDateString()
+			});
+		}
+		else if (this.state.mode === "time") {
+			this.setState({
+				endTimeText: this.state.endDate.toLocaleTimeString()
+			});
+		}
 	}
 
 	show = (mode, dateType) => {
@@ -160,7 +163,7 @@ class UserScanLogsScreen extends Component {
 			this.setState({
 				reportGotten: true,
 				usersLog: {
-					"name": this.capitalizeFirstLetter(this.props.userLogs.userScanLogs.user.firstName) + " " + 
+					"name": this.capitalizeFirstLetter(this.props.userLogs.userScanLogs.user.firstName) + " " +
 						this.capitalizeFirstLetter(this.props.userLogs.userScanLogs.user.lastName),
 					"present": this.props.userLogs.userScanLogs.presentDays,
 					"absent": this.props.userLogs.userScanLogs.absentDays,
@@ -168,6 +171,9 @@ class UserScanLogsScreen extends Component {
 				}
 			});
 			console.log(this.props.userLogs.userScanLogs)
+		}
+		else{
+			alert(this.props.userLogs.error)
 		}
 	}
 
@@ -197,44 +203,44 @@ class UserScanLogsScreen extends Component {
 				<NavigationEvents onWillFocus={this.componentHasMounted} />
 				{<View>
 					<View style={{ display: "flex", margin: 3, justifyContent: 'center', marginVertical: "5%" }}>
-            <Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
-              Select start date and time
+						<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
+							Select start date and time
               </Text>
-            <TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
-              marginVertical: "2%",
-              textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.startDateText}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
-              padding: 3, alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.startTimeText}
-              </Text>
-            </TouchableOpacity>
-          </View>
-      		<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
-				  <View style={{ display: "flex", margin: 3, justifyContent: 'center' }}>
-            <TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
-               marginVertical: "2%",
-							 textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.endDateText}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
-              padding: 3, alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.endTimeText}
-              </Text>
-            </TouchableOpacity>
-          </View>
-      
+						<TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
+							marginVertical: "2%",
+							textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
+						}}>
+							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+								{this.state.startDateText}
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
+							padding: 3, alignSelf: "center"
+						}}>
+							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+								{this.state.startTimeText}
+							</Text>
+						</TouchableOpacity>
+					</View>
+					<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
+					<View style={{ display: "flex", margin: 3, justifyContent: 'center' }}>
+						<TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
+							marginVertical: "2%",
+							textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
+						}}>
+							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+								{this.state.endDateText}
+							</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
+							padding: 3, alignSelf: "center"
+						}}>
+							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+								{this.state.endTimeText}
+							</Text>
+						</TouchableOpacity>
+					</View>
+
 					<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20, marginVertical: "5%" }}>Select user</Text>
 					<Picker
 						selectedValue={this.state.userId}
@@ -253,7 +259,7 @@ class UserScanLogsScreen extends Component {
 						<Text style={{ color: "white", textAlign: "center" }}>Get Report</Text>
 					</TouchableOpacity>
 				</View>
-				
+
 
 				}
 				{showStart && <DateTimePicker value={startDate}

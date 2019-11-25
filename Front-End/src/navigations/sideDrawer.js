@@ -18,10 +18,10 @@ const Drawer = props => {
     props.navigation.navigate('ViewUserReport');
   };
 
-  signOut = () => {
-    // alert('Sign out pressed')
-    // props.navigation.navigate('SignOut');
+  _goToSignOut = () => {
+    props.navigation.navigate('SignOut');
   };
+
   _goToGeneratorPage = () => {
     props.navigation.navigate('GeneratorScreen')
   }
@@ -62,7 +62,7 @@ const Drawer = props => {
          name="barcode" size={40}></Icon>
         <Text style={styles.loginText}>Barcode Generator</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={signOut} style={styles.loginContainer}>
+      <TouchableOpacity onPress={_goToSignOut} style={styles.loginContainer}>
         <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
          name="power-off" size={40}></Icon>
         <Text style={styles.loginText}> Sign Out </Text>

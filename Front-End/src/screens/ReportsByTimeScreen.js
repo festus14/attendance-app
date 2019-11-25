@@ -284,7 +284,7 @@ class ReportsByTimeScreen extends React.Component {
           })
         }
         {
-          getReportSubmitted && this.props.scanLogs.error !== null &&
+          getReportSubmitted && this.props.scanLogs.error !== null && this.props.scanLogs.error !== undefined &&
           <View style={{justifyContent: "center"}}>
             <Text style={{fontSize: 21, color: '#800020', marginTop: "50%", textAlign: "center"}}>{this.props.scanLogs.error.toString() + ", please try again."}</Text>
           </View>

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   BackHandler
 } from 'react-native';
+import {AppStyles} from '../utility/AppStyles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { sendScannedBarcodeString } from '../actions/index';
 import { connect } from 'react-redux';
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     padding: 16,
-  }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BarCodeScanner);
