@@ -5,10 +5,13 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  Image,
+  BackHandler,
 } from 'react-native';
-import {AppStyles} from '../AppStyles';
+import {AppStyles} from '../utility/AppStyles';
 
 import {connect} from 'react-redux';
+import { logIn } from '../actions/AuthAction';
 
 class LoginScreen extends Component {
   static navigationOptions = {
@@ -17,26 +20,68 @@ class LoginScreen extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
       password: '',
       displayPassword: true,
+      error: ''
     };
   }
 
-  onPressLogin = () => {
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  changeDisplay = () => {
+    this.setState({
+      displayPassword: !this.state.displayPassword,
+      password: '',
+    });
+  };
+
+  handleBackButtonClick = () => {
+    if (!this.state.displayPassword) {
+      this.changeDisplay();
+      return true;
+    }
+  };
+
+  onPressLogin = async () => {
+    
     const {email, password} = this.state;
+
     if (email.length <= 0 || password.length <= 0) {
       alert('Please fill out the required fields.');
       return;
     }
-    this.props.navigation.navigate('App');
-    // _signInAsync = async () => {
-    //   await AsyncStorage.setItem('userToken', 'abc');
-    //   this.props.navigation.navigate('App');
-    // };
+
+    let data = {
+      email,
+      password,
+    };
+
+    let error = await this.props.logIn(data);
+    console.warn(error)
+    if (error) {
+      this.openError(error)
+    } else {
+      this.props.navigation.navigate('App');
+    }
   };
+
+  openError = (error) => {
+    this.setState({ error })
+  }
 
   onPressSubmitForgotPassword = () => {
     const {email} = this.state;
@@ -44,18 +89,22 @@ class LoginScreen extends Component {
       alert('Please fill out the required fields.');
       return;
     }
-    // this.props.navigation.navigate('Auth');
-    this.setState({
-      displayPassword: !this.state.displayPassword,
-      password: '',
-    });
+    this.changeDisplay;
   };
 
   render() {
+    const { email, password, displayPassword, error } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          {this.state.displayPassword ? 'Sign In' : 'Forgot Password'}
+        <View>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/icons/Logo2.png')}
+          />
+        </View>
+        <Text>{error}</Text>
+        <Text style={styles.title}>
+          {displayPassword ? 'Sign In' : 'Forgot Password'}
         </Text>
         <View style={styles.InputContainer}>
           <TextInput
@@ -63,11 +112,11 @@ class LoginScreen extends Component {
             placeholder="Enter e-mail"
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
-            value={this.state.email}
+            value={email}
             onChangeText={text => this.setState({email: text})}
           />
         </View>
-        {this.state.displayPassword && (
+        {displayPassword && (
           <View style={styles.InputContainer}>
             <TextInput
               style={styles.body}
@@ -75,7 +124,7 @@ class LoginScreen extends Component {
               placeholder="Password"
               placeholderTextColor={AppStyles.color.grey}
               underlineColorAndroid="transparent"
-              value={this.state.password}
+              value={password}
               onChangeText={text => this.setState({password: text})}
             />
           </View>
@@ -84,23 +133,21 @@ class LoginScreen extends Component {
           <TouchableOpacity
             style={styles.loginContainer}
             onPress={
-              this.state.displayPassword
+              displayPassword
                 ? () => this.onPressLogin()
                 : () => this.onPressSubmitForgotPassword()
             }>
             <Text style={styles.loginText}>
-              
-              {this.state.displayPassword ? 'Login' : 'Submit'}
+              {displayPassword ? 'Login' : 'Submit'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.loginContainer}
             onPress={() =>
-              this.setState({displayPassword: !this.state.displayPassword})
+              this.setState({displayPassword: !displayPassword})
             }>
             <Text style={styles.loginText}>
-              
-              {this.state.displayPassword ? 'Forgot Password' : 'Login'}
+              {displayPassword ? 'Forgot Password' : 'Login'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -125,19 +172,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: AppStyles.color.tint,
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 5,
   },
   leftTitle: {
     alignSelf: 'stretch',
     textAlign: 'left',
     marginLeft: 20,
-  },
-  content: {
-    paddingLeft: 50,
-    paddingRight: 50,
-    textAlign: 'center',
-    fontSize: AppStyles.fontSize.content,
-    color: AppStyles.color.text,
   },
   loginContainer: {
     width: 250,
@@ -168,16 +208,19 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     color: AppStyles.color.text,
   },
-  facebookContainer: {
-    width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.facebook,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  facebookText: {
-    color: AppStyles.color.white,
+  logo: {
+    marginBottom: 10,
+    marginTop: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 });
 
-export default LoginScreen;
+
+
+const mapDispatchToProps = dispatch => ({
+  logIn: (data) => dispatch(logIn(data)),
+});
+
+export default connect(null, mapDispatchToProps)(LoginScreen);
