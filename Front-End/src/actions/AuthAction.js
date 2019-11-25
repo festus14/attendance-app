@@ -6,6 +6,7 @@ import NavigationService from '../navigations/NavigationService';
 import moment from 'moment'
 
 export const logIn = ({ email, password }) => async dispatch => {
+    
     dispatch(authLoading());
     try {
         let res = await axios.post(`${APIURL}auth/`, { email, password });
@@ -54,12 +55,13 @@ export const logOut = () => async dispatch => {
     }
 };
 
-export const setAuth = payload => async dispatch => {
+export const setAuth = payload => async (dispatch) => {
     try {
         await RNSecureKeyStore.set('token', JSON.stringify(payload), {
             accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
         });
         console.warn('Saved!')
+        
         dispatch(() => ({
             type: SET_TOKEN,
             payload,

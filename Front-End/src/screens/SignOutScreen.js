@@ -48,13 +48,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 5,
   },
-  content: {
-    paddingLeft: 50,
-    paddingRight: 50,
-    textAlign: 'center',
-    fontSize: AppStyles.fontSize.content,
-    color: AppStyles.color.text,
-  },
   loginContainer: {
     width: 250,
     backgroundColor: AppStyles.color.tint,
@@ -65,18 +58,6 @@ const styles = StyleSheet.create({
   loginText: {
     color: AppStyles.color.white,
     textAlign: 'center',
-  },
-  placeholder: {
-    fontFamily: AppStyles.fontName.text,
-    color: 'red',
-  },
-  InputContainer: {
-    width: AppStyles.textInputWidth.main,
-    marginTop: 30,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: AppStyles.color.grey,
-    borderRadius: AppStyles.borderRadius.main,
   },
 });
 

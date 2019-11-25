@@ -16,7 +16,7 @@ const Drawer = props => {
     props.navigation.navigate('ViewUserReport');
   };
 
-  _goToSignOut = () => {
+  signOut = () => {
     props.navigation.navigate('SignOut');
   };
 
@@ -57,7 +57,7 @@ const Drawer = props => {
         style={styles.loginContainer}>
         <Text style={styles.loginText}>Go to Generator Screen</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={_goToSignOut} style={styles.loginContainer}>
+      <TouchableOpacity onPress={signOut} style={styles.loginContainer}>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
     </View>

@@ -3,20 +3,15 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  StatusBar,
   BackHandler,
 } from 'react-native';
 import {AppStyles} from '../utility/AppStyles';
+import UserTable from '../components/UserTable';
 import {alertNotification} from '../actions/index';
 
 import {connect} from 'react-redux';
 
-export default class UserDetailsScreen extends Component {
-  _signOutAsync = async () => {
-    // await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
+class UserDetailsScreen extends Component {
 
   componentDidMount() {
     BackHandler.addEventListener(
@@ -32,30 +27,15 @@ export default class UserDetailsScreen extends Component {
     );
   }
 
-  handleBackButtonClick = () => {
-    // alertNotification();
-    // this.props.navigation.goBack();
-  };
 
   render() {
+    const state = this.state;
     return (
       <View style={styles.container}>
-        <Text style={[styles.title, styles.leftTitle]}>
-          
-          View User Details
-        </Text>
         <View style={styles.body}>
-          <Text>
-            This is the HR page for viewing all the employee details.Also a
-            signout button will be somewhere here
-          </Text>
+          <Text style={styles.title}>User Details</Text>
           <View>
-            <TouchableOpacity
-              onPress={this._signOutAsync}
-              style={styles.loginContainer}>
-              <Text style={styles.loginText}> Sign out </Text>
-            </TouchableOpacity>
-            <StatusBar barStyle="default" />
+            <UserTable name={state.user.name} key={state.user.id} />
           </View>
         </View>
       </View>
@@ -66,69 +46,36 @@ export default class UserDetailsScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-  },
-  or: {
-    fontFamily: AppStyles.fontName.main,
-    color: 'black',
-    marginTop: 40,
-    marginBottom: 10,
+    padding: 16,
+    paddingTop: 30,
   },
   title: {
-    fontSize: AppStyles.fontSize.title,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: AppStyles.color.tint,
     marginTop: 20,
     marginBottom: 20,
-  },
-  leftTitle: {
-    alignSelf: 'stretch',
-    textAlign: 'left',
-    marginLeft: 20,
+    color: 'white',
+    textAlign: 'center',
+    paddingBottom: 10,
+    borderBottomColor: 'white',
+    borderBottomWidth: 1,
   },
   content: {
     paddingLeft: 50,
     paddingRight: 50,
     textAlign: 'center',
-    fontSize: AppStyles.fontSize.content,
-    color: AppStyles.color.text,
-  },
-  loginContainer: {
-    width: 250,
-    backgroundColor: AppStyles.color.tint,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  loginText: {
-    color: AppStyles.color.white,
-    textAlign: 'center',
-  },
-  placeholder: {
-    fontFamily: AppStyles.fontName.text,
-    color: 'red',
-  },
-  InputContainer: {
-    width: AppStyles.textInputWidth.main,
-    marginTop: 30,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: AppStyles.color.grey,
-    borderRadius: AppStyles.borderRadius.main,
   },
   body: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    color: AppStyles.color.text,
-  },
-  facebookContainer: {
-    width: AppStyles.buttonWidth.main,
-    backgroundColor: AppStyles.color.facebook,
-    borderRadius: AppStyles.borderRadius.main,
-    padding: 10,
-    marginTop: 30,
-  },
-  facebookText: {
-    color: AppStyles.color.white,
+    height: '90%',
+    backgroundColor: AppStyles.color.tint,
+    borderRadius: 50,
+    padding: 0,
   },
 });
+
+
+const mapStateToProps = state => ({
+  user: state.authReducer.user
+});
+
+export default connect(mapStateToProps)(UserDetailsScreen);
