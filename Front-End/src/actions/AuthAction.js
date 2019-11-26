@@ -25,7 +25,6 @@ export const refreshToken = (
   refreshToken,
   oldAccessToken,
 ) => async dispatch => {
-  console.warn('refreshed!!!');
   try {
     let res = await axios.post(`${APIURL}auth/refresh-token`, {
       refreshToken,
@@ -35,6 +34,7 @@ export const refreshToken = (
     if (!res.data.success) {
       return null;
     }
+    await dispatch(setAuth(res.data.data));
     return res.data.data;
   } catch (error) {
     console.log(error, 33);
@@ -69,13 +69,7 @@ export const setAuth = payload => async dispatch => {
     await RNSecureKeyStore.set('token', JSON.stringify(payload), {
       accessible: ACCESSIBLE.ALWAYS_THIS_DEVICE_ONLY,
     });
-    return dispatch => {
-      dispatch({
-        type: SET_TOKEN,
-        payload,
-      });
-      return true;
-    };
+    dispatch(setUser(payload))
   } catch (error) {
     console.warn('error ', error);
     return false;
@@ -97,22 +91,22 @@ export const getToken = () => async (dispatch, getState) => {
   let token = getState().authReducer.token;
   let expiry = getState().authReducer.expiry;
   let refresh = getState().authReducer.refreshToken;
-  console.warn(expiry);
   if (!token || (expiry && moment(expiry).isBefore(moment()))) {
-    console.warn('refreshed!??!');
     try {
+      let tokenObject = {};
       if (expiry && moment(expiry).isBefore(moment())) {
-        console.warn('refresh!!!!!!');
-        token = await dispatch(refreshToken(refresh, token));
+        tokenObject = await dispatch(refreshToken(refresh, token));
+        token = tokenObject.token;
       } else {
-        let tokenObject = await RNSecureKeyStore.get('token');
+        tokenObject = await RNSecureKeyStore.get('token');
         tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
         token = tokenObject.token;
         expiry = tokenObject.expiry;
         refresh = tokenObject.refreshToken;
 
         if (expiry && moment(expiry).isBefore(moment())) {
-          token = await dispatch(refreshToken(refresh, token));
+          tokenObject = await dispatch(refreshToken(refresh, token));
+          token = tokenObject.token
         }
       }
     } catch (err) {
@@ -130,7 +124,6 @@ export const getUserInfo = userId => async dispatch => {
     let res = await axios.get(`${APIURL}users/${userId}`, {
       headers: {Authorization: `Bearer ${token}`},
     });
-    console.warn('Got userID', res.data);
     if (!res.data.success) {
       return res.data.message;
     }
