@@ -57,6 +57,7 @@ class LoginScreen extends Component {
   };
 
   onPressLogin = async () => {
+    
     const {email, password} = this.state;
 
     if (email.length <= 0 || password.length <= 0) {
@@ -88,7 +89,6 @@ class LoginScreen extends Component {
       alert('Please fill out the required fields.');
       return;
     }
-    // this.props.navigation.navigate('Auth');
     this.changeDisplay;
   };
 
@@ -179,13 +179,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: 20,
   },
-  content: {
-    paddingLeft: 50,
-    paddingRight: 50,
-    textAlign: 'center',
-    fontSize: AppStyles.fontSize.content,
-    color: AppStyles.color.text,
-  },
   loginContainer: {
     width: 250,
     backgroundColor: AppStyles.color.tint,
@@ -223,6 +216,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
 });
+
+
 
 const mapDispatchToProps = dispatch => ({
   logIn: (data) => dispatch(logIn(data)),
