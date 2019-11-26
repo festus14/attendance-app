@@ -18,6 +18,7 @@ import { getAllRegisteredUsers } from "../actions/index";
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NavigationEvents } from 'react-navigation';
+import { getErrorMessage } from '../actions/errorMessages';
 
 
 const mapDispatchToProps = dispatch => {
@@ -156,18 +157,18 @@ class ReportsByTimeScreen extends React.Component {
     this.show('time', dateType);
   }
 
-  
+
   getReport = async () => {
     let listOfUsers = []
     await this.setState({
       getReportSubmitted: true
     });
-    if (this.state.users.length === 0){
+    if (this.state.users.length === 0) {
       await this.componentHasMounted();
     }
     let scanLogs = await this.props.getLogs(
       {
-        "from": new Date(this.state.startDateText + " " + this.state.startTimeText + " GMT+0100 (WAT)").getTime(), 
+        "from": new Date(this.state.startDateText + " " + this.state.startTimeText + " GMT+0100 (WAT)").getTime(),
         "to": new Date(this.state.endDateText + " " + this.state.endTimeText + " GMT+0100 (WAT)").getTime()
       });
     if (scanLogs) {
@@ -206,106 +207,108 @@ class ReportsByTimeScreen extends React.Component {
   render() {
     const { showStart, showEnd, startDate, endDate, mode, getReportSubmitted, modalVisible } = this.state;
     return (
-      <View style={{ flex: 1 }}>
-        <NavigationEvents onWillFocus={() => this.componentHasMounted()} />
-        {!getReportSubmitted && <View>
-          <View style={{ display: "flex", margin: "2%", justifyContent: 'center', marginVertical: "10%" }}>
-            <Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
-              Select start date and time
+      <ScrollView>
+        <View style={{flex: 1}}>
+          <NavigationEvents onWillFocus={() => this.componentHasMounted()} />
+          {!getReportSubmitted && <View>
+            <View style={{ display: "flex", margin: "2%", justifyContent: 'center', marginVertical: "10%" }}>
+              <Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
+                Select start date and time
               </Text>
-            <TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
-              marginVertical: "2%",
-              textDecorationLine: "underline", padding: "2%", textDecorationColor: "black", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.startDateText}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
-              padding: "2%", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.startTimeText}
-              </Text>
+              <TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
+                marginVertical: "2%",
+                textDecorationLine: "underline", padding: "2%", textDecorationColor: "black", alignSelf: "center"
+              }}>
+                <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+                  {this.state.startDateText}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
+                padding: "2%", alignSelf: "center"
+              }}>
+                <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+                  {this.state.startTimeText}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
+            <View style={{ display: "flex", margin: "2%", justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
+                marginVertical: "2%",
+                padding: "2%", alignSelf: "center"
+              }}>
+                <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+                  {this.state.endDateText}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
+                padding: "2%", alignSelf: "center"
+              }}>
+                <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+                  {this.state.endTimeText}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.ButtonContainer} onPress={this.getReport}>
+              <Text style={{ color: "white", textAlign: "center" }}>Get Report</Text>
             </TouchableOpacity>
           </View>
-          <Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
-          <View style={{ display: "flex", margin: "2%", justifyContent: 'center' }}>
-            <TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
-              marginVertical: "2%",
-              padding: "2%", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.endDateText}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
-              padding: "2%", alignSelf: "center"
-            }}>
-              <Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-                {this.state.endTimeText}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.ButtonContainer} onPress={this.getReport}>
-            <Text style={{ color: "white", textAlign: "center" }}>Get Report</Text>
-          </TouchableOpacity>
-        </View>
 
-        }
-        {
-          getReportSubmitted && this.props.scanLogs.loading &&
-          <View>
-            <Text style={{ color: "#800020", marginBottom: "20%", fontWeight: "bold", fontSize: 30 }}>Getting Report</Text>
-            <ActivityIndicator size="large" style={{ flex: 1 }} color="#800020" />
-          </View>
-        }
-        {
-          getReportSubmitted && this.props.scanLogs.success && this.state.listViewData.length === 0 &&
-          <View>
-            <Text style={{ color: "#800020", marginBottom: "20%", fontWeight: "bold", fontSize: 30 }}>No reports to show</Text>
-          </View>
-        }
-        {getReportSubmitted && this.props.scanLogs.success &&
-          this.state.listViewData.map((log, index) => {
-            return (
-              <ScrollView key={log.id}>
-                <View style={{ margin: "5%", height: "100%" }}>
-                  <Card style={{ backgroundColor: "#800020" }}>
-                    <Card.Content>
-                      <Title style={{ color: "white", fontSize: 25 }}>{log.name}</Title>
-                      <Title style={{ color: "white", fontSize: 16 }}>{log.log}</Title>
-                      <Paragraph style={{ color: "white" }}>{"Present Location: " + " " + log.officeLocation}</Paragraph>
-                    </Card.Content>
-                  </Card>
-                </View>
-              </ScrollView>
-            );
-          })
-        }
-        {
-          getReportSubmitted && this.props.scanLogs.error !== null && this.props.scanLogs.error !== undefined &&
-          <View style={{justifyContent: "center"}}>
-            <Text style={{fontSize: 21, color: '#800020', marginTop: "50%", textAlign: "center"}}>{this.props.scanLogs.error.toString() + ", please try again."}</Text>
-          </View>
-        }
-        {showStart && <DateTimePicker value={startDate}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={this.setStartDate}
-          maximumDate={new Date()}
-        />
-        }
-        {showEnd && <DateTimePicker value={endDate}
-          mode={mode}
-          is24Hour={true}
-          display="default"
-          onChange={this.setEndDate}
-          maximumDate={new Date()}
-        />
-        }
-      </View>
+          }
+          {
+            getReportSubmitted && this.props.scanLogs.loading &&
+            <View>
+              <Text style={{ color: "#800020", marginBottom: "20%", fontWeight: "bold", fontSize: 30 }}>Getting Report</Text>
+              <ActivityIndicator size="large" color="#800020" />
+            </View>
+          }
+          {
+            getReportSubmitted && this.props.scanLogs.success && this.state.listViewData.length === 0 &&
+            <View>
+              <Text style={{ color: "#800020", marginBottom: "20%", fontWeight: "bold", fontSize: 30 }}>No reports to show</Text>
+            </View>
+          }
+          {getReportSubmitted && this.props.scanLogs.success &&
+            this.state.listViewData.map((log, index) => {
+              return (
+                  <View style={{ margin: "5%", backgroundColor: "#800020", borderRadius: 15 }}>
+                    <Card style={{ backgroundColor: "#800020" }}>
+                      <Card.Content>
+                        <Title style={{ color: "white", fontSize: 25 }}>{log.name}</Title>
+                        <Title style={{ color: "white", fontSize: 16 }}>{log.log}</Title>
+                        <Paragraph style={{ color: "white" }}>{"Present Location: " + " " + log.officeLocation}</Paragraph>
+                      </Card.Content>
+                    </Card>
+                  </View>
+              );
+            })
+          }
+          {
+            getReportSubmitted && this.props.scanLogs.error !== null && this.props.scanLogs.error !== undefined &&
+            <View style={{ justifyContent: "center" }}>
+              <Text style={{ fontSize: 21, color: '#800020', marginTop: "50%", textAlign: "center" }}>{getErrorMessage(this.props.scanLogs.error.toString()) + ", please try again."}</Text>
+            </View>
+          }
+          {
+            showStart && <DateTimePicker value={startDate}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={this.setStartDate}
+              maximumDate={new Date()}
+            />
+          }
+          {
+            showEnd && <DateTimePicker value={endDate}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={this.setEndDate}
+              maximumDate={new Date()}
+            />
+          }
+        </View >
+      </ScrollView>
 
     );
   }

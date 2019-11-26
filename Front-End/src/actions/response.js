@@ -3,6 +3,7 @@ import { sendBarcodeStringFailure, sendBarcodeStringSuccess } from './sendBarcod
 import { getBarcodeStringSuccess, getBarcodeStringFailure } from './getBarcodeString.js';
 import { getAllUsersSuccess, getAllUsersFailure } from './getAllUsers.js';
 import { getUserScanLogsSuccess, getUserScanLogsFailure } from './getUserScanLogs.js';
+import { getRolesSuccess, getRolesFailure } from './getRoles.js';
 
 
 
@@ -38,6 +39,12 @@ export function successResponse(response, endPoint, requestMethod) {
             return (dispatch) => {
                 if (requestMethod === "get") {
                     dispatch(getAllUsersSuccess(response.data.data));
+                }
+            }
+        case 'roles':
+            return (dispatch) => {
+                if (requestMethod === "get") {
+                    dispatch(getRolesSuccess(response.data.data));
                 }
             }
         default:
@@ -80,6 +87,12 @@ export function failureResponse(error, endPoint, requestMethod) {
             return (dispatch) => {
                 if (requestMethod === "get") {
                     dispatch(getAllUsersFailure(error));
+                }
+            }
+        case 'roles':
+            return (dispatch) => {
+                if (requestMethod === "get") {
+                    dispatch(getRolesFailure(error));
                 }
             }
         default:

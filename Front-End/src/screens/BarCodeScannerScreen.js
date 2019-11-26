@@ -10,6 +10,7 @@ import {AppStyles} from '../utility/AppStyles';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { sendScannedBarcodeString } from '../actions/index';
 import { connect } from 'react-redux';
+import getErrorMessage from '../actions/errorMessages';
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -92,6 +93,12 @@ class BarCodeScanner extends React.Component {
           !this.state.cameraInitiated && this.props.scanResponse.success &&
           <View style={{ flex: 1, alignItems: "center" }}>
             <Text style={{fontSize: 21, color: '#800020', marginTop: "50%"}}>{this.state.textToShow}</Text>
+          </View>
+        }
+        {
+          !this.state.cameraInitiated && this.props.scanResponse.error !== null && this.props.scanResponse.error !== undefined &&
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={{fontSize: 21, color: '#800020', marginTop: "50%"}}>{getErrorMessage(this.props.scanResponse.error)}</Text>
           </View>
         }
       </View>
