@@ -7,17 +7,26 @@ import {
 } from 'react-native';
 import {AppStyles} from '../utility/AppStyles';
 import UserTable from '../components/UserTable';
-import {alertNotification} from '../actions/index';
-
+import RNSecureKeyStore, {ACCESSIBLE} from 'react-native-secure-key-store';
 import {connect} from 'react-redux';
+import { getUserInfo } from '../actions/AuthAction';
 
 class UserDetailsScreen extends Component {
 
-  componentDidMount() {
+  constructor(props){
+    super(props);
+  }
+
+  async componentDidMount() {
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
     );
+
+    let tokenObject = await RNSecureKeyStore.get('token');
+    tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
+    userId = tokenObject.user.id
+    this.props.getUserInfo(userId);
   }
 
   componentWillUnmount() {
@@ -29,13 +38,14 @@ class UserDetailsScreen extends Component {
 
 
   render() {
-    const state = this.state;
+    const { user } = this.props;
+    console.warn('Props here', user);
     return (
       <View style={styles.container}>
         <View style={styles.body}>
           <Text style={styles.title}>User Details</Text>
-          <View>
-            <UserTable name={state.user.name} key={state.user.id} />
+          <View style={styles.textContainer}>
+            <UserTable firstName={user.firstName} email={user.email} gender={user.gender} lastName={user.lastName} roles={user.roleIds} key={user.id} />
           </View>
         </View>
       </View>
@@ -50,7 +60,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   title: {
-    fontSize: 22,
+    fontSize: 23,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
@@ -71,11 +81,20 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     padding: 0,
   },
+  textContainer: {
+    marginLeft: 20,
+  }
 });
 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getUserInfo: userId => dispatch(getUserInfo(userId)),
+  };
+}
 
 const mapStateToProps = state => ({
   user: state.authReducer.user
-});
+})
 
-export default connect(mapStateToProps)(UserDetailsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsScreen);

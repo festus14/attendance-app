@@ -1,27 +1,33 @@
 import React from 'react'
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
-export default function index({name, age}) {
+export default function index({firstName, lastName, email, gender, roles}) {
     return (
-      <div textStyle={styles.textStyles}>
-        <p>
-          <span>Name: </span>
-          <span>{name}</span>
-        </p>
-        <p>
-          <span>Age: </span>
-          <span>{age}</span>
-        </p>
-      </div>
+      <View style={styles.textContainer}>
+        <View style={styles.textContainer}>
+          <Text style={styles.textStyles}>
+            Name: {firstName} {lastName}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.textStyles}>Email: {email}</Text>
+        </View>
+        <View>
+          <Text style={styles.textStyles}>Gender: {gender}</Text>
+        </View>
+        <View>
+          <Text style={styles.textStyles}>Role: {gender}</Text>
+        </View>
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
   textStyles: {
-    margin: 10,
     color: 'white',
-    paddingLeft: 20,
-    paddingTop: 10,
+    marginBottom: '3%',
     width: '100%',
+    fontSize: 14,
+    display: 'flex'
   },
 });

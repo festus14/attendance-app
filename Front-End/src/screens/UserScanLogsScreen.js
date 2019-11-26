@@ -7,7 +7,9 @@ import {
 	ActivityIndicator,
 	BackHandler,
 	Modal,
-	Picker
+	Picker,
+	ScrollView,
+	RefreshControl,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NavigationEvents } from 'react-navigation';
@@ -56,7 +58,8 @@ class UserScanLogsScreen extends Component {
 			endTimeText: new Date().toLocaleTimeString(),
 			type: "start",
 			startDateToSend: new Date().getTime(),
-			endDateToSend: new Date().getTime()
+			endDateToSend: new Date().getTime(),
+			refreshing: false
 		}
 	}
 
@@ -77,8 +80,8 @@ class UserScanLogsScreen extends Component {
 				users: userInfo
 			});
 		}
-		else{
-			alert("An error occured while getting users: " + "\n" +this.props.allUsers.error.toString())
+		else {
+			alert("An error occured while getting users: " + "\n" + this.props.allUsers.error.toString())
 		}
 	}
 
@@ -172,8 +175,8 @@ class UserScanLogsScreen extends Component {
 			});
 			console.log(this.props.userLogs.userScanLogs)
 		}
-		else{
-			alert(this.props.userLogs.error)
+		else {
+			alert("An error occured " + "\n" + "\n" + this.props.userLogs.error)
 		}
 	}
 
@@ -196,112 +199,130 @@ class UserScanLogsScreen extends Component {
 		await this.props.navigation.goBack();
 	};
 
+	waitForRefresh = (timeout) => {
+		return new Promise(resolve => {
+			setTimeout(resolve, timeout);
+		});
+	}
+
+	_onRefresh = () => {
+		this.setState({ refreshing: true });
+		this.componentHasMounted();
+		this.waitForRefresh(3000).then(() => {
+			this.setState({ refreshing: false });
+		});
+	}
+
 	render() {
 		const { showStart, showEnd, startDate, endDate, mode, getReportSubmitted, reportGotten } = this.state;
 		return (
-			<View style={{ flex: 1 }}>
-				<NavigationEvents onWillFocus={this.componentHasMounted} />
-				{<View>
-					<View style={{ display: "flex", margin: 3, justifyContent: 'center', marginVertical: "5%" }}>
-						<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
-							Select start date and time
+			<ScrollView contentContainerStyle={{ justifyContent: "center", flex: 1 }}
+				refreshControl={
+					<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />
+				}>
+				<View style={{ flex: 1 }}>
+					<NavigationEvents onWillFocus={this.componentHasMounted} />
+					{<View>
+						<View style={{ display: "flex", margin: 3, justifyContent: 'center', marginVertical: "5%" }}>
+							<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>
+								Select start date and time
               </Text>
-						<TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
-							marginVertical: "2%",
-							textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
-						}}>
-							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-								{this.state.startDateText}
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
-							padding: 3, alignSelf: "center"
-						}}>
-							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-								{this.state.startTimeText}
-							</Text>
-						</TouchableOpacity>
-					</View>
-					<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
-					<View style={{ display: "flex", margin: 3, justifyContent: 'center' }}>
-						<TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
-							marginVertical: "2%",
-							textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
-						}}>
-							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-								{this.state.endDateText}
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
-							padding: 3, alignSelf: "center"
-						}}>
-							<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
-								{this.state.endTimeText}
-							</Text>
+							<TouchableOpacity onPress={() => { this.datepicker("start") }} style={{
+								marginVertical: "2%",
+								textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
+							}}>
+								<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+									{this.state.startDateText}
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => { this.timepicker("start") }} style={{
+								padding: 3, alignSelf: "center"
+							}}>
+								<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+									{this.state.startTimeText}
+								</Text>
+							</TouchableOpacity>
+						</View>
+						<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20 }}>Select end date and time</Text>
+						<View style={{ display: "flex", margin: 3, justifyContent: 'center' }}>
+							<TouchableOpacity onPress={() => { this.datepicker("end") }} style={{
+								marginVertical: "2%",
+								textDecorationLine: "underline", padding: 3, textDecorationColor: "black", alignSelf: "center"
+							}}>
+								<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+									{this.state.endDateText}
+								</Text>
+							</TouchableOpacity>
+							<TouchableOpacity onPress={() => { this.timepicker("end") }} style={{
+								padding: 3, alignSelf: "center"
+							}}>
+								<Text style={{ borderBottomColor: "black", borderBottomWidth: 1 }}>
+									{this.state.endTimeText}
+								</Text>
+							</TouchableOpacity>
+						</View>
+
+						<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20, marginVertical: "5%" }}>Select user</Text>
+						<Picker
+							selectedValue={this.state.userId}
+							style={{ height: "20%", width: "100%" }}
+							onValueChange={(value) => {
+								this.setState({ userId: value })
+							}
+							}>
+							{this.state.users.map((user, index) => {
+								return (
+									<Picker.Item label={this.capitalizeFirstLetter(user.name)} value={user.id} key={user.id} />
+								);
+							})}
+						</Picker>
+						<TouchableOpacity style={styles.ButtonContainer} onPress={this.getReport}>
+							<Text style={{ color: "white", textAlign: "center" }}>Get Report</Text>
 						</TouchableOpacity>
 					</View>
 
-					<Text style={{ textAlign: "center", color: "#800020", fontWeight: "bold", fontSize: 20, marginVertical: "5%" }}>Select user</Text>
-					<Picker
-						selectedValue={this.state.userId}
-						style={{ height: "20%", width: "100%" }}
-						onValueChange={(value) => {
-							this.setState({ userId: value })
-						}
-						}>
-						{this.state.users.map((user, index) => {
-							return (
-								<Picker.Item label={this.capitalizeFirstLetter(user.name)} value={user.id} key={user.id} />
-							);
-						})}
-					</Picker>
-					<TouchableOpacity style={styles.ButtonContainer} onPress={this.getReport}>
-						<Text style={{ color: "white", textAlign: "center" }}>Get Report</Text>
-					</TouchableOpacity>
+
+					}
+					{showStart && <DateTimePicker value={startDate}
+						mode={mode}
+						is24Hour={true}
+						display="default"
+						onChange={this.setStartDate}
+						maximumDate={new Date()}
+					/>
+					}
+					{showEnd && <DateTimePicker value={endDate}
+						mode={mode}
+						is24Hour={true}
+						display="default"
+						onChange={this.setEndDate}
+						maximumDate={new Date()}
+					/>
+					}
+					{
+						this.props.userLogs.loading && getReportSubmitted &&
+						<View style={{ position: "absolute", backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%' }}>
+							<ActivityIndicator size="large" style={{ flex: 1 }} color="#800020" />
+						</View>
+					}
+					{
+						this.props.userLogs.success && reportGotten &&
+						<View style={{ position: "absolute", backgroundColor: "rgba(0,0,0,0.2)", width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+							<Card style={{ backgroundColor: "#800020", elevation: 5, position: "absolute", width: "85%", borderRadius: 20 }}>
+								<Card.Content>
+									<TouchableOpacity onPress={this.closeReport}>
+										<Paragraph style={{ color: "white", textAlign: "right", fontSize: 20 }}>X</Paragraph>
+									</TouchableOpacity>
+									<Title style={{ color: "white", fontSize: 25, padding: "2%" }}>{this.state.usersLog.name}</Title>
+									<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Present Days: " + this.state.usersLog.present}</Paragraph>
+									<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Absent Days: " + this.state.usersLog.absent}</Paragraph>
+									<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Hours Worked: " + this.state.usersLog.hoursWorked}</Paragraph>
+								</Card.Content>
+							</Card>
+						</View>
+					}
 				</View>
-
-
-				}
-				{showStart && <DateTimePicker value={startDate}
-					mode={mode}
-					is24Hour={true}
-					display="default"
-					onChange={this.setStartDate}
-					maximumDate={new Date()}
-				/>
-				}
-				{showEnd && <DateTimePicker value={endDate}
-					mode={mode}
-					is24Hour={true}
-					display="default"
-					onChange={this.setEndDate}
-					maximumDate={new Date()}
-				/>
-				}
-				{
-					this.props.userLogs.loading && getReportSubmitted &&
-					<View style={{ position: "absolute", backgroundColor: "rgba(0,0,0,0.1)", width: '100%', height: '100%' }}>
-						<ActivityIndicator size="large" style={{ flex: 1 }} color="#800020" />
-					</View>
-				}
-				{
-					this.props.userLogs.success && reportGotten &&
-					<View style={{ position: "absolute", backgroundColor: "rgba(0,0,0,0.2)", width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-						<Card style={{ backgroundColor: "#800020", elevation: 5, position: "absolute", width: "85%", borderRadius: 20 }}>
-							<Card.Content>
-								<TouchableOpacity onPress={this.closeReport}>
-									<Paragraph style={{ color: "white", textAlign: "right", fontSize: 20 }}>X</Paragraph>
-								</TouchableOpacity>
-								<Title style={{ color: "white", fontSize: 25, padding: "2%" }}>{this.state.usersLog.name}</Title>
-								<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Present Days: " + this.state.usersLog.present}</Paragraph>
-								<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Absent Days: " + this.state.usersLog.absent}</Paragraph>
-								<Paragraph style={{ color: "white", padding: "2%" }}>{"Number of Hours Worked: " + this.state.usersLog.hoursWorked}</Paragraph>
-							</Card.Content>
-						</Card>
-					</View>
-				}
-			</View>
-
+			</ScrollView>
 		);
 	}
 }
