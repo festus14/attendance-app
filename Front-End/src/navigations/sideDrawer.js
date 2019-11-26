@@ -2,28 +2,49 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store';
+import { getToken } from "../actions/AuthAction";
+import { getRolesById } from "../actions/getDetailsById";
+import { connect } from 'react-redux';
 
 
-const Drawer = props => {
+const mapStateToProps = state => ({
+  userLogs: state.getUserScanLogs,
+  allRoles: state.getRoles,
+  user: state.authReducer.user
+});
 
-  _showUserDetails = () => {
-    props.navigation.navigate('UserDetails');
+
+const Drawer = (props) => {
+  const _showUserDetails = () => {
+    // has_admin_rights();
+    console.log(props.allRoles.roles, "ihiohoihih")
+    props.propss.navigation.navigate('UserDetails');
   };
 
-  _goToBarCodeScanner = () => {
-    props.navigation.navigate('BarCodeScanner');
+  const _goToBarCodeScanner = () => {
+    props.propss.navigation.navigate('BarCodeScanner');
   };
 
-  _goToViewUserReport = () => {
-    props.navigation.navigate('ViewUserReport');
+  const _goToViewUserReport = () => {
+    props.propss.navigation.navigate('ViewUserReport');
   };
 
-  _goToSignOut = () => {
-    props.navigation.navigate('SignOut');
+  const _goToSignOut = () => {
+    props.propss.navigation.navigate('SignOut');
   };
 
-  _goToGeneratorPage = () => {
-    props.navigation.navigate('GeneratorScreen')
+  const _goToGeneratorPage = () => {
+    props.propss.navigation.navigate('GeneratorScreen')
+  }
+
+  const has_admin_rights = async() => {
+    return async (dispatch) => {
+      let token = dispatch(await getToken());
+      if (token !== null){
+        console.log(RNSecureKeyStore.get("user"))
+      }
+    }
   }
 
   return (
@@ -37,39 +58,41 @@ const Drawer = props => {
       <TouchableOpacity
         onPress={_goToBarCodeScanner}
         style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
-         name="camera" size={40}></Icon>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+          name="camera" size={40}></Icon>
         <Text style={styles.loginText}>Scan barcode</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_goToViewUserReport}
         style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
-         name="retweet" size={40}></Icon>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+          name="retweet" size={40}></Icon>
         <Text style={styles.loginText}>Users report</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_showUserDetails}
         style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
-         name="user" size={40}></Icon>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+          name="user" size={40}></Icon>
         <Text style={styles.loginText}>User details</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={_goToGeneratorPage}
         style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
-         name="barcode" size={40}></Icon>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+          name="barcode" size={40}></Icon>
         <Text style={styles.loginText}>Barcode Generator</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={_goToSignOut} style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%"}}
-         name="power-off" size={40}></Icon>
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+          name="power-off" size={40}></Icon>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
+
+export default connect(mapStateToProps, null)(Drawer);
 
 const styles = StyleSheet.create({
   container: {
@@ -135,7 +158,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Drawer;
+
 
 
 

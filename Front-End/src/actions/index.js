@@ -6,7 +6,8 @@ import { getBarcodeString } from './getBarcodeString.js';
 import { sendBarcodeString } from './sendBarcodeString';
 import { getAllScanLog } from './getAllScanLog';
 import { getAllUsers } from './getAllUsers';
-import {getUserScanLogs} from './getUserScanLogs';
+import { getUserScanLogs } from './getUserScanLogs';
+import { getRoles } from './getRoles';
 
 export const alertNotification = () => {
     onPressSimpleAlert = () => {
@@ -56,6 +57,15 @@ export const getAllLogsOfScannedUsers = (formData, endPoint, requestMethod) => {
 export const getScanLogsPerUser = (formData, endPoint, requestMethod) => {
     try {
         return (dispatch) => dispatch(getUserScanLogs(formData, endPoint, requestMethod));
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+export const getAllRoles = (endPoint, requestMethod) => {
+    try {
+        return (dispatch) => dispatch(getRoles(endPoint, requestMethod));
     }
     catch (error) {
         console.log(error)
