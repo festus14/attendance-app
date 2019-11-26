@@ -1,8 +1,8 @@
-import { SET_TOKEN, AUTH_LOADING } from '../../actions/types';
+import { SET_TOKEN, AUTH_LOADING, SET_USER } from '../../actions/types';
 
 const initialState = {
     token: null,
-    user: null,
+    user: {},
     expiry: null,
     refreshToken: null,
     loading: false,
@@ -24,4 +24,4 @@ export default function(state = initialState, action) {
         default:
             return state;
     }
-}
+};
