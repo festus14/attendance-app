@@ -82,7 +82,7 @@ export const getToken = () => async(dispatch, getState) => {
     let token = getState().authReducer.token;
     let expiry = getState().authReducer.expiry;
     let refresh = getState().authReducer.refreshToken;
-    console.warn(expiry)
+    
     if (!token || (expiry && moment(expiry).isBefore(moment()))) {
         try {
             if (expiry && moment(expiry).isBefore(moment())) {

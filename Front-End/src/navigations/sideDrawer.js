@@ -17,8 +17,8 @@ const mapStateToProps = state => ({
 
 const Drawer = (props) => {
   const _showUserDetails = () => {
-    // has_admin_rights();
-    console.log(props.allRoles.roles, "ihiohoihih")
+    has_admin_rights();
+    // console.log(props.allRoles.roles, "ihiohoihih")
     props.propss.navigation.navigate('UserDetails');
   };
 
@@ -42,7 +42,7 @@ const Drawer = (props) => {
     return async (dispatch) => {
       let token = dispatch(await getToken());
       if (token !== null){
-        console.log(RNSecureKeyStore.get("user"))
+        console.log(RNSecureKeyStore.get("token"), "qaekfvnl")
       }
     }
   }
