@@ -15,9 +15,7 @@ import BarcodeGeneratorScreen from "../screens/BarcodeGeneratorScreen";
 const AppStack = createStackNavigator({
     Home: HomeScreen,
     BarCodeScanner: BarCodeScannerScreen,
-    Home: HomeScreen,
     UserDetails: UserDetailsScreen,
-    Home: HomeScreen,
     ViewUserReport: ViewUserReportScreen,
     SignOut: SignOutScreen,
     ReportByTime: ReportsByTimeScreen,

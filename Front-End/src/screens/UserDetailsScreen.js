@@ -1,23 +1,28 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
+import { AppStyles } from '../utility/AppStyles';
 import UserTable from '../components/UserTable';
-import RNSecureKeyStore, {ACCESSIBLE} from 'react-native-secure-key-store';
-import {connect} from 'react-redux';
+import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store';
+import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 import { getUserInfo } from '../actions/AuthAction';
 
 class UserDetailsScreen extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
+
+    this.state = {
+      componentJustMounted: true
+    }
   }
 
-  async componentDidMount() {
+  componentHasMounted = async () => {
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
@@ -27,7 +32,26 @@ class UserDetailsScreen extends Component {
     tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
     userId = tokenObject.user.id
     this.props.getUserInfo(userId);
+
+    this.setState({ componentJustMounted: true })
   }
+
+  async componentDidMount() {
+    if (!this.state.componentJustMounted) {
+      BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.handleBackButtonClick,
+      );
+
+      let tokenObject = await RNSecureKeyStore.get('token');
+      tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
+      userId = tokenObject.user.id
+      this.props.getUserInfo(userId);
+
+      this.setState({ componentJustMounted: true })
+    }
+  }
+
 
   componentWillUnmount() {
     BackHandler.removeEventListener(
@@ -36,12 +60,16 @@ class UserDetailsScreen extends Component {
     );
   }
 
+  handleBackButtonClick = () => {
+    this.props.navigation.goBack();
+  };
 
   render() {
     const { user } = this.props;
     console.warn('Props here', user);
     return (
       <View style={styles.container}>
+        <NavigationEvents onWillFocus={() => this.componentHasMounted()} />
         <View style={styles.body}>
           <Text style={styles.title}>User Details</Text>
           <View style={styles.textContainer}>

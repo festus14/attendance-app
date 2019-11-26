@@ -16,10 +16,11 @@ import Drawer from '../navigations/sideDrawer';
 import { connect } from 'react-redux';
 import { logOut } from '../actions/AuthAction';
 import { getScanLogsPerUser, getAllRoles } from "../actions/index";
-import { ProgressBar, Colors, ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 import { getErrorMessage } from '../actions/errorMessages';
+import { getToken } from "../actions/AuthAction";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -30,6 +31,9 @@ const mapDispatchToProps = dispatch => {
     },
     getCreatedRoles: () => {
       return dispatch(getAllRoles('roles', "get"))
+    },
+    getUser: () => {
+      return dispatch(getToken());
     }
   }
 }
@@ -50,7 +54,8 @@ class HomeScreen extends Component {
     this.state = {
       drawerOpen: false,
       userInfo: {},
-      refreshing: false
+      refreshing: false,
+      componentJustMounted: false
     };
   }
 
@@ -65,14 +70,14 @@ class HomeScreen extends Component {
       "user_id": 1
     }
     let roles = await this.props.getCreatedRoles();
+    let user = await this.props.getUser();
+
     if (roles) {
-      console.log(this.props.allRoles.roles)
       let userLog = await this.props.getLogsPerUser(formData);
       if (userLog) {
         this.setState({
           ...this.props.userLogs.userScanLogs
         })
-        console.log(this.state)
       }
       else {
         alert("An error occured while starting application: " + "\n" + "\n" + this.props.userLogs.error)
@@ -81,26 +86,33 @@ class HomeScreen extends Component {
     else {
       alert("An error occured while starting application: " + "\n" + "\n" + this.props.allRoles.error)
     }
-
+    this.setState({
+      componentJustMounted: true
+    });
   }
 
   async componentDidMount() {
-    BackHandler.addEventListener(
-      'hardwareBackPress',
-      this.handleBackButtonClick,
-    );
-    let formData = {
-      "from": new Date(" Thu Jan 01 1970 00:00:00 GMT+0100 (WAT)").getTime(),
-      "to": new Date().getTime(),
-      "user_id": 1
+    if (!this.state.componentJustMounted) {
+      BackHandler.addEventListener(
+        'hardwareBackPress',
+        this.handleBackButtonClick,
+      );
+      let formData = {
+        "from": new Date(" Thu Jan 01 1970 00:00:00 GMT+0100 (WAT)").getTime(),
+        "to": new Date().getTime(),
+        "user_id": 1
+      };
+      let user = await this.props.getUser();
+      let userLog = await this.props.getLogsPerUser(formData);
+      if (userLog) {
+        this.setState({
+          ...this.props.userLogs.userScanLogs
+        })
+      }
     }
-    let userLog = await this.props.getLogsPerUser(formData);
-    if (userLog) {
-      this.setState({
-        ...this.props.userLogs.userScanLogs
-      })
-      console.log(this.state)
-    }
+    this.setState({
+      componentJustMounted: true
+    });
   }
 
 
@@ -167,7 +179,7 @@ class HomeScreen extends Component {
             ref={'DRAWER'}
             renderNavigationView={() => {
               return (
-                <Drawer propss={this.props}/>
+                <Drawer propss={this.props} />
               );
             }}
           >

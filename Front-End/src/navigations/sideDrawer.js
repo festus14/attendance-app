@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store';
-import { getToken } from "../actions/AuthAction";
 import { getRolesById } from "../actions/getDetailsById";
 import { connect } from 'react-redux';
 
@@ -16,10 +15,17 @@ const mapStateToProps = state => ({
 
 
 const Drawer = (props) => {
+  const [hasAdminRights, setHasAdminRights] = useState(false);
+
+
+  useEffect(() => {
+    console.log(props.user, "jere")
+    setHasAdminRights(true)
+  },[])
+  
   const _showUserDetails = () => {
-    has_admin_rights();
+      props.propss.navigation.navigate('UserDetails');
     // console.log(props.allRoles.roles, "ihiohoihih")
-    props.propss.navigation.navigate('UserDetails');
   };
 
   const _goToBarCodeScanner = () => {
@@ -36,15 +42,6 @@ const Drawer = (props) => {
 
   const _goToGeneratorPage = () => {
     props.propss.navigation.navigate('GeneratorScreen')
-  }
-
-  const has_admin_rights = async() => {
-    return async (dispatch) => {
-      let token = dispatch(await getToken());
-      if (token !== null){
-        console.log(RNSecureKeyStore.get("token"), "qaekfvnl")
-      }
-    }
   }
 
   return (
