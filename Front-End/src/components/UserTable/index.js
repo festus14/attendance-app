@@ -1,7 +1,7 @@
 import React from 'react'
 import {StyleSheet, Text, View} from 'react-native';
 
-export default function index({firstName, lastName, email, gender, roles}) {
+export default function index({firstName, lastName, email, gender, roles, department}) {
     return (
       <View style={styles.textContainer}>
         <View style={styles.textContainer}>
@@ -16,7 +16,14 @@ export default function index({firstName, lastName, email, gender, roles}) {
           <Text style={styles.textStyles}>Gender: {gender}</Text>
         </View>
         <View>
-          <Text style={styles.textStyles}>Role: {gender}</Text>
+          <Text style={styles.textStyles}>
+            Roles: {roles.map(elem => elem + ', ')}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.textStyles}>
+            Department: {department}
+          </Text>
         </View>
       </View>
     );

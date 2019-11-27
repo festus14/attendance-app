@@ -103,6 +103,7 @@ export const getToken = () => async (dispatch, getState) => {
         token = tokenObject.token;
         expiry = tokenObject.expiry;
         refresh = tokenObject.refreshToken;
+        dispatch(setAuth(tokenObject))
 
         if (expiry && moment(expiry).isBefore(moment())) {
           tokenObject = await dispatch(refreshToken(refresh, token));
