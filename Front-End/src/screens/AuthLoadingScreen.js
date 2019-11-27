@@ -1,18 +1,24 @@
-import React, {Component} from 'react';
-import {ActivityIndicator, StatusBar, View} from 'react-native';
+import React, { Component } from 'react';
+import { ActivityIndicator, StatusBar, View } from 'react-native';
 import { connect } from 'react-redux';
 import { getToken } from '../actions/AuthAction';
 
 class AuthLoadingScreen extends Component {
   async componentDidMount() {
     let token = await this.props.getToken();
-    this.props.navigation.navigate(token ? 'App' : 'Auth');
+    try {
+      this.props.navigation.navigate(token ? 'App': 'Auth');
+    }
+    catch (error) {
+      console.log(error)
+    }
+
   }
 
   render() {
     return (
-      <View>
-        <ActivityIndicator />
+      <View style={{ flex: 1, alignSelf: "center", position: "absolute", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="#800020" />
         <StatusBar barStyle="default" />
       </View>
     );

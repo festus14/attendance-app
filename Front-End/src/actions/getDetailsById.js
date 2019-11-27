@@ -1,14 +1,13 @@
 export const getRolesById = (roleId, allRoles) => {
     let roles = [];
-
     roleId.forEach(userRoles => {
         allRoles.forEach(role => {
-            return (userRoles === role.id) ? roles.push(role.name.split("_")[1]) : "";
+            if (userRoles === role.id) {
+                roles.push(role.name.split("_")[1])
+            }
         })
     });
-
     return roles;
-
 }
 
 export const getDepartmentById = (departmentId, allDepartments) => {

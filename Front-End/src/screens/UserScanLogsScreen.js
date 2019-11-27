@@ -70,6 +70,29 @@ class UserScanLogsScreen extends Component {
 		);
 		let allUsers = await this.props.getUsers();
 		if (allUsers) {
+			console.log(this.props.allUsers.users)
+			let userInfo = this.props.allUsers.users.users.map((user, index) => {
+				return {
+					"name": this.capitalizeFirstLetter(user.firstName) + " " + this.capitalizeFirstLetter(user.lastName),
+					"id": user.id
+				}
+			})
+			await this.setState({
+				users: userInfo
+			});
+		}
+		else {
+			alert("An error occured while getting users: " + "\n" + this.props.allUsers.error.toString())
+		}
+	}
+
+	async componentDidMount() {
+		BackHandler.addEventListener(
+			'hardwareBackPress',
+			this.handleBackButtonClick,
+		);
+		let allUsers = await this.props.getUsers();
+		if (allUsers) {
 			let userInfo = this.props.allUsers.users.users.map((user, index) => {
 				return {
 					"name": this.capitalizeFirstLetter(user.firstName) + " " + this.capitalizeFirstLetter(user.lastName),
@@ -218,7 +241,7 @@ class UserScanLogsScreen extends Component {
 		return (
 			<ScrollView contentContainerStyle={{ justifyContent: "center", flex: 1 }}
 				refreshControl={
-					<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />
+					<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} colors={["#800020"]} />
 				}>
 				<View style={{ flex: 1 }}>
 					<NavigationEvents onWillFocus={this.componentHasMounted} />

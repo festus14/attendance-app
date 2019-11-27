@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   Text,
-  TextInput,
   View,
-  TouchableOpacity,
   BackHandler,
   DrawerLayoutAndroid,
-  Image,
   ScrollView,
   RefreshControl,
 } from 'react-native';
@@ -21,11 +17,14 @@ import { NavigationEvents } from 'react-navigation';
 import moment from 'moment';
 import { getErrorMessage } from '../actions/errorMessages';
 import { getToken } from "../actions/AuthAction";
+import { getRolesById } from "../actions/getDetailsById";
+import AuthLoadingScreen from './AuthLoadingScreen';
 
 const mapDispatchToProps = dispatch => {
   return {
     logOut: () => dispatch(logOut()),
     getLogsPerUser: (formData) => {
+      console.log(formData, ";''''")
       let param = formData.from + "&to=" + formData.to + "&user_id=" + formData.user_id + "&param="
       return dispatch(getScanLogsPerUser(null, 'logs/user_logs/?from=' + param, 'get'))
     },
@@ -40,7 +39,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => ({
   userLogs: state.getUserScanLogs,
-  allRoles: state.getRoles
+  allRoles: state.getRoles,
+  user: state.authReducer.user
 })
 
 class HomeScreen extends Component {
@@ -55,7 +55,9 @@ class HomeScreen extends Component {
       drawerOpen: false,
       userInfo: {},
       refreshing: false,
-      componentJustMounted: false
+      componentJustMounted: false,
+      hasGenRights: false,
+      hasOtherRights: false
     };
   }
 
@@ -64,13 +66,15 @@ class HomeScreen extends Component {
       'hardwareBackPress',
       this.handleBackButtonClick,
     );
-    let formData = {
-      "from": new Date(" Thu Jan 01 1970 00:00:00 GMT+0100 (WAT)").getTime(),
-      "to": new Date().getTime(),
-      "user_id": 1
-    }
+
     let roles = await this.props.getCreatedRoles();
     let user = await this.props.getUser();
+      console.log(this.props.user.error, "wdjv")
+    let formData = {
+      "from": new Date("Sat Jan 03 1970 10:10:00 GMT+0100 (WAT)").getTime(),
+      "to": new Date().getTime(),
+      "user_id": 2
+    }
 
     if (roles) {
       let userLog = await this.props.getLogsPerUser(formData);
@@ -78,13 +82,14 @@ class HomeScreen extends Component {
         this.setState({
           ...this.props.userLogs.userScanLogs
         })
+        this.isAGenerator();
       }
       else {
-        alert("An error occured while starting application: " + "\n" + "\n" + this.props.userLogs.error)
+        alert("An error occured while starting application: " + "\n" + "\n" + getErrorMessage(this.props.userLogs.error))
       }
     }
     else {
-      alert("An error occured while starting application: " + "\n" + "\n" + this.props.allRoles.error)
+      alert("An error occured while starting application: " + "\n" + "\n" + getErrorMessage(this.props.allRoles.error))
     }
     this.setState({
       componentJustMounted: true
@@ -97,22 +102,36 @@ class HomeScreen extends Component {
         'hardwareBackPress',
         this.handleBackButtonClick,
       );
-      let formData = {
-        "from": new Date(" Thu Jan 01 1970 00:00:00 GMT+0100 (WAT)").getTime(),
-        "to": new Date().getTime(),
-        "user_id": 1
-      };
+
+      let roles = await this.props.getCreatedRoles();
       let user = await this.props.getUser();
-      let userLog = await this.props.getLogsPerUser(formData);
-      if (userLog) {
-        this.setState({
-          ...this.props.userLogs.userScanLogs
-        })
+        console.log(this.props.user, "wajev;o")
+        console.log(this.props.userLogs.error, "wdjv")
+      let formData = {
+        "from": new Date(" Sat Jan 03 1970 00:00:00 GMT+0100 (WAT)").getTime(),
+        "to": new Date().getTime(),
+        "user_id": 2
       }
+
+      if (roles) {
+        let userLog = await this.props.getLogsPerUser(formData);
+        if (userLog) {
+          this.setState({
+            ...this.props.userLogs.userScanLogs
+          })
+          this.isAGenerator();
+        }
+        else {
+          alert("An error occured while starting application: " + "\n" + "\n" + getErrorMessage(this.props.userLogs.error))
+        }
+      }
+      else {
+        alert("An error occured while starting application: " + "\n" + "\n" + getErrorMessage(this.props.allRoles.error))
+      }
+      this.setState({
+        componentJustMounted: true
+      });
     }
-    this.setState({
-      componentJustMounted: true
-    });
   }
 
 
@@ -146,6 +165,18 @@ class HomeScreen extends Component {
     }
   };
 
+  isAGenerator = () => {
+    let user_roles = getRolesById(this.props.user.roleIds, this.props.allRoles.roles);
+
+    if (user_roles.includes("GENERATOR")) {
+      this.setState({ hasGenRights: true })
+    }
+    else if (user_roles.length > 0 && !user_roles.includes("GENERATOR")) {
+      this.setState({ hasOtherRights: true })
+    }
+  }
+
+
   waitForRefresh = (timeout) => {
     return new Promise(resolve => {
       setTimeout(resolve, timeout);
@@ -160,16 +191,13 @@ class HomeScreen extends Component {
     });
   }
 
-  propss = () => {
-    return this.props;
-  };
-
   render() {
     return (
       <ScrollView contentContainerStyle={{ justifyContent: "center", flex: 1 }}
         refreshControl={
-          <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} />
+          <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} colors={["#800020"]} />
         }>
+        <AuthLoadingScreen />
         <View style={{ flex: 1, justifyContent: "center" }}>
           <NavigationEvents onWillFocus={this.componentHasMounted} />
           <DrawerLayoutAndroid
@@ -202,7 +230,7 @@ class HomeScreen extends Component {
               }}>
                 {this.capitalizeFirstLetter(this.props.userLogs.userScanLogs.user.firstName) + " " + this.capitalizeFirstLetter(this.props.userLogs.userScanLogs.user.lastName)}
               </Text>
-              <View style={{ padding: "5%", marginTop: "5%" }}>
+              {this.state.hasOtherRights && <View style={{ padding: "5%", marginTop: "5%" }} >
                 <Text style={{ fontSize: 14, marginBottom: "3%", color: "white" }}>{"Number of Days Absent: " + this.props.userLogs.userScanLogs.absentDays}</Text>
                 <Text style={{ fontSize: 14, marginBottom: "3%", color: "white" }}>{"Number of Days Present: " + this.props.userLogs.userScanLogs.presentDays}</Text>
                 <Text style={{ fontSize: 14, marginBottom: "3%", color: "white" }}>{"Number of Hours Worked: " + this.props.userLogs.userScanLogs.hours}</Text>
@@ -214,7 +242,13 @@ class HomeScreen extends Component {
                 </View>
                 <Text style={{ fontSize: 14, marginBottom: "3%", color: "white" }}>{(this.props.userLogs.userScanLogs.inside) ? "Current Location: In office" : "Current Location: Out of office"}</Text>
                 <Text style={{ fontSize: 14, marginBottom: "3%", color: "white" }}>{(this.props.userLogs.userScanLogs.lastLog === null) ? "Last sign time: You have never been present" : "Last sign time: " + moment(this.props.userLogs.userScanLogs.lastLog.createdAt).toString()}</Text>
-              </View>
+              </View>}
+              {
+                this.state.hasGenRights &&
+                <View>
+                  <Text style={{ color: "white", fontSize: 20 }}>Generates the barcode.</Text>
+                </View>
+              }
             </View>
           }
           {
