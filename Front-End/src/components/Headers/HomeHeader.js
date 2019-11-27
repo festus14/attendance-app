@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { AppStyles } from '../../utility/AppStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Sidebar from 'react-native-sidebar';
-import userImage from '../../../assets/icons/man-user.png';
-import { Drawer } from "../../navigations/sideDrawer"
 
 export const HomeHeader = ({ onLeftPress }) => {
   return (

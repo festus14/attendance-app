@@ -7,15 +7,16 @@ export const getDepartments = () => async dispatch => {
     dispatch(departmentLoading());
     try {
         let token = await dispatch(getToken());
-        console.warn('hererer', token)
-        let res = await axios.post(`${APIURL}departments/`, {
+        let res = await axios.get(`${APIURL}departments/`, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.warn(res.data);
+        console.warn('departments obj', res.data.data.departments);
         if (!res.data.success) {
             return res.data.message;
         }
-        await dispatch(setDepartment(res.data.data));
+        if (res.data.data !== undefined) {
+            await dispatch(setDepartment(res.data.data));
+        }
         return '';
     } catch (error) {
         console.warn(error);

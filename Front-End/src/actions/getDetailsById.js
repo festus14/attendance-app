@@ -1,6 +1,5 @@
 export const getRolesById = (roleId, allRoles) => {
     let roles = [];
-
     roleId.forEach(userRoles => {
         allRoles.forEach(role => {
             if (userRoles === role.id) {
@@ -8,9 +7,7 @@ export const getRolesById = (roleId, allRoles) => {
             }
         })
     });
-
     return roles;
-
 }
 
 export const getDepartmentById = (departmentId, allDepartments) => {
