@@ -18,13 +18,13 @@ export default function getRoles(state = initialState, action) {
                 ...state,
                 loading: false,
                 success: true,
-                roles: action.payload
+                roles: action.payload.roles
             };
         case "GET_ROLES_FAILURE":
             return {
                 ...state,
                 loading: false,
-                error: action.payload.error               
+                error: action.payload.error
             };
         default:
             return state;

@@ -8,6 +8,7 @@ import sendBarcodeString from './sendBarcodeString';
 import getAllUsers from './getAllUsers';
 import getUserScanLogs from './getUserScanLogs';
 import getRoles from './getRoles';
+import getDepartments from './getDepartments'
 
 export default combineReducers({
     authReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
     sendBarcodeString,
     getAllUsers,
     getUserScanLogs,
-    getRoles
+    getRoles,
+    getDepartments
 });

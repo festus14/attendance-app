@@ -3,7 +3,9 @@ export const getRolesById = (roleId, allRoles) => {
 
     roleId.forEach(userRoles => {
         allRoles.forEach(role => {
-            return (userRoles === role.id) ? roles.push(role.name.split("_")[1]) : "";
+            if (userRoles === role.id) {
+                roles.push(role.name.split("_")[1])
+            }
         })
     });
 

@@ -1,22 +1,19 @@
-import { SET_TOKEN, AUTH_LOADING } from '../../actions/types';
+import { GET_DEPARTMENTS, DEPARTMENT_LOADING } from '../actions/types';
 
 const initialState = {
-    token: null,
-    user: {},
-    expiry: null,
-    refreshToken: null,
+    departments: [],
     loading: false,
 };
 
 export default function(state = initialState, action) {
     switch (action.type) {
-        case SET_TOKEN:
+        case GET_DEPARTMENTS:
             return {
                 ...state,
                 ...action.payload,
                 loading: false,
             };
-        case AUTH_LOADING:
+        case DEPARTMENT_LOADING:
             return {
                 ...state,
                 loading: true,
@@ -24,4 +21,4 @@ export default function(state = initialState, action) {
         default:
             return state;
     }
-};
+}
