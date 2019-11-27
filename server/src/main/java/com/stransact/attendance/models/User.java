@@ -75,6 +75,9 @@ public class User extends Auditable<String> implements Serializable {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false))
     private Set<Role> roles;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private Set<TimeLog> timeLogs;
+
     /**
      * Gets id.
      *
@@ -227,6 +230,14 @@ public class User extends Auditable<String> implements Serializable {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<TimeLog> getTimeLogs() {
+        return timeLogs;
+    }
+
+    public void setTimeLogs(Set<TimeLog> timeLogs) {
+        this.timeLogs = timeLogs;
     }
 
     public boolean hasRole(String auth) {
