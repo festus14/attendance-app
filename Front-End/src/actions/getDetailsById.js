@@ -1,6 +1,5 @@
 export const getRolesById = (roleId, allRoles) => {
     let roles = [];
-
     roleId.forEach(userRoles => {
         allRoles.forEach(role => {
             if (userRoles === role.id) {
@@ -8,17 +7,16 @@ export const getRolesById = (roleId, allRoles) => {
             }
         })
     });
-
     return roles;
-
 }
 
 export const getDepartmentById = (departmentId, allDepartments) => {
-    console.log(departmentId, allDepartments)
-    let department = allDepartments.map(department => {
+    console.log(departmentId, allDepartments, "all")
+    let departmentName = ""
+    allDepartments.forEach(department => {
         if (department.id === departmentId) {
-            return department.name;
+            departmentName = department.name;
         }
     });
-    return department[0];
+    return departmentName;
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,22 @@ import {
   Image,
   BackHandler,
 } from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
-
-import {connect} from 'react-redux';
+import { AppStyles } from '../utility/AppStyles';
+import { connect } from 'react-redux';
 import { logIn } from '../actions/AuthAction';
+import AuthLoadingScreen from './AuthLoadingScreen';
+import { getToken } from "../actions/AuthAction";
+
+
+const mapDispatchToProps = dispatch => ({
+  logIn: (data) => dispatch(logIn(data)),
+  getToken: () => dispatch(getToken()),
+});
+
+
+const mapStateToProps = state => ({
+  auth: state.authReducer
+})
 
 class LoginScreen extends Component {
   static navigationOptions = {
@@ -29,6 +41,7 @@ class LoginScreen extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.navigate("Auth")
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
@@ -57,8 +70,8 @@ class LoginScreen extends Component {
   };
 
   onPressLogin = async () => {
-    
-    const {email, password} = this.state;
+
+    const { email, password } = this.state;
 
     if (email.length <= 0 || password.length <= 0) {
       alert('Please fill out the required fields.');
@@ -71,7 +84,6 @@ class LoginScreen extends Component {
     };
 
     let error = await this.props.logIn(data);
-    console.warn(error)
     if (error) {
       this.openError(error)
     } else {
@@ -84,7 +96,7 @@ class LoginScreen extends Component {
   }
 
   onPressSubmitForgotPassword = () => {
-    const {email} = this.state;
+    const { email } = this.state;
     if (email.length <= 0) {
       alert('Please fill out the required fields.');
       return;
@@ -113,9 +125,12 @@ class LoginScreen extends Component {
             placeholderTextColor={AppStyles.color.grey}
             underlineColorAndroid="transparent"
             value={email}
-            onChangeText={text => this.setState({email: text})}
+            onChangeText={text => this.setState({ email: text })}
           />
         </View>
+        {this.props.auth.loading && <View>
+          <AuthLoadingScreen propss ={this.props}/>
+        </View>}
         {displayPassword && (
           <View style={styles.InputContainer}>
             <TextInput
@@ -125,7 +140,7 @@ class LoginScreen extends Component {
               placeholderTextColor={AppStyles.color.grey}
               underlineColorAndroid="transparent"
               value={password}
-              onChangeText={text => this.setState({password: text})}
+              onChangeText={text => this.setState({ password: text })}
             />
           </View>
         )}
@@ -144,7 +159,7 @@ class LoginScreen extends Component {
           <TouchableOpacity
             style={styles.loginContainer}
             onPress={() =>
-              this.setState({displayPassword: !displayPassword})
+              this.setState({ displayPassword: !displayPassword })
             }>
             <Text style={styles.loginText}>
               {displayPassword ? 'Forgot Password' : 'Login'}
@@ -217,10 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-const mapDispatchToProps = dispatch => ({
-  logIn: (data) => dispatch(logIn(data)),
-});
-
-export default connect(null, mapDispatchToProps)(LoginScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

@@ -4,21 +4,20 @@ import { APIURL } from '../utility/config';
 import { getToken } from './AuthAction';
 
 export const getDepartments = () => async dispatch => {
-    dispatch(departmentLoading());
     try {
+        dispatch(departmentLoading());
         let token = await dispatch(getToken());
-        console.warn('hererer', token)
-        let res = await axios.post(`${APIURL}departments/`, {
+        let res = await axios.get(`${APIURL}departments/`, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.warn(res.data);
         if (!res.data.success) {
             return res.data.message;
         }
-        await dispatch(setDepartment(res.data.data));
-        return '';
+        if (res.data.data !== undefined) {
+            await dispatch(setDepartment(res.data.data));
+        }
+        return 'success';
     } catch (error) {
-        console.warn(error);
         return error.data.message;
     }
 };

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,12 +6,26 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
+import { AppStyles } from '../utility/AppStyles';
 
-import {logOut} from '../actions/AuthAction';
-import {connect} from 'react-redux';
+import { logOut } from '../actions/AuthAction';
+import { connect } from 'react-redux';
+import { ActivityIndicator } from 'react-native-paper';
 
 class SignOutScreen extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      singOutButtonPressed: false
+    }
+  }
+
+  signOut = async () => {
+    this.setState({ singOutButtonPressed: true });
+    let signOut = await this.props.logOut();
+  }
 
   render() {
     return (
@@ -21,8 +35,13 @@ class SignOutScreen extends Component {
           <Text> Are you sure you want to sign out ? </Text>
           <TouchableOpacity
             style={styles.loginContainer}
-            onPress={this.props.logOut}>
+            onPress={this.signOut}>
             <Text style={styles.loginText}>Sign Out</Text>
+            {this.state.singOutButtonPressed &&
+              <View style={{justifyContent: "center"}}>
+                <ActivityIndicator size="large" color="#800020" style={{ flex: 1, alignSelf: "center" }} />
+              </View>
+            }
           </TouchableOpacity>
         </View>
       </View>

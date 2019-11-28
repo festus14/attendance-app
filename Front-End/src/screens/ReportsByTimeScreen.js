@@ -4,8 +4,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TouchableHighlight,
-  StatusBar,
   BackHandler,
   ActivityIndicator
 } from 'react-native';
@@ -172,8 +170,6 @@ class ReportsByTimeScreen extends React.Component {
         "to": new Date(this.state.endDateText + " " + this.state.endTimeText + " GMT+0100 (WAT)").getTime()
       });
     if (scanLogs) {
-      alert(this.state.users.length)
-      console.log(this.props.scanLogs.scanLog)
       this.props.scanLogs.scanLog.forEach((log, index) => {
         return this.state.users.forEach((user, index) => {
           if (log.userId === user.id) {

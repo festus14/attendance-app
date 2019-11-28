@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store';
-import { getToken } from "../actions/AuthAction";
 import { getRolesById } from "../actions/getDetailsById";
+import { getAllRoles } from "../actions/index";
 import { connect } from 'react-redux';
+import { getToken } from '../actions/AuthAction';
 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getCreatedRoles: () => {
+      return dispatch(getAllRoles('roles', "get"))
+    }
+  }
+}
 
 const mapStateToProps = state => ({
   userLogs: state.getUserScanLogs,
@@ -16,9 +24,21 @@ const mapStateToProps = state => ({
 
 
 const Drawer = (props) => {
+
+  const [hasAdminRights, setHasAdminRights] = useState(false);
+  const [hasGeneratorRights, setHasGeneratorRights] = useState(false);
+
+
+  useEffect(() => {
+    if (props.user.roleIds.includes(3)) {
+      setHasGeneratorRights(true);
+    }
+    else if (props.user.roleIds.includes(2)) {
+      setHasAdminRights((true));
+    }
+  }, [])
+
   const _showUserDetails = () => {
-    // has_admin_rights();
-    console.log(props.allRoles.roles, "ihiohoihih")
     props.propss.navigation.navigate('UserDetails');
   };
 
@@ -38,15 +58,6 @@ const Drawer = (props) => {
     props.propss.navigation.navigate('GeneratorScreen')
   }
 
-  const has_admin_rights = async() => {
-    return async (dispatch) => {
-      let token = dispatch(await getToken());
-      if (token !== null){
-        console.log(RNSecureKeyStore.get("user"))
-      }
-    }
-  }
-
   return (
     <View style={{ backgroundColor: '#800020', height: '100%', width: '100%', paddingTop: "15%" }}>
       <Text style={{
@@ -55,36 +66,45 @@ const Drawer = (props) => {
         paddingBottom: "5%", fontWeight: "bold", marginBottom: "10%"
       }}>
         Attendance</Text>
-      <TouchableOpacity
-        onPress={_goToBarCodeScanner}
-        style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
-          name="camera" size={40}></Icon>
-        <Text style={styles.loginText}>Scan barcode</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={_goToViewUserReport}
-        style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
-          name="retweet" size={40}></Icon>
-        <Text style={styles.loginText}>Users report</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={_showUserDetails}
-        style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
-          name="user" size={40}></Icon>
-        <Text style={styles.loginText}>User details</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={_goToGeneratorPage}
-        style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
-          name="barcode" size={40}></Icon>
-        <Text style={styles.loginText}>Barcode Generator</Text>
-      </TouchableOpacity>
+      {!hasGeneratorRights &&
+        <TouchableOpacity
+          onPress={_goToBarCodeScanner}
+          style={styles.loginContainer}>
+          <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+            name="camera" size={40}></Icon>
+          <Text style={styles.loginText}>Scan barcode</Text>
+        </TouchableOpacity>}
+      {
+        hasAdminRights &&
+        <TouchableOpacity
+          onPress={_goToViewUserReport}
+          style={styles.loginContainer}>
+          <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+            name="retweet" size={40}></Icon>
+          <Text style={styles.loginText}>Users report</Text>
+        </TouchableOpacity>
+      }
+      {!hasGeneratorRights &&
+        <TouchableOpacity
+          onPress={_showUserDetails}
+          style={styles.loginContainer}>
+          <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 30, paddingRight: "10%" }}
+            name="user"></Icon>
+          <Text style={styles.loginText}>User details</Text>
+        </TouchableOpacity>
+      }
+      {
+        hasGeneratorRights &&
+        <TouchableOpacity
+          onPress={_goToGeneratorPage}
+          style={styles.loginContainer}>
+          <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+            name="barcode" size={40}></Icon>
+          <Text style={styles.loginText}>Barcode Generator</Text>
+        </TouchableOpacity>
+      }
       <TouchableOpacity onPress={_goToSignOut} style={styles.loginContainer}>
-        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 20, paddingRight: "10%" }}
+        <Icon style={{ color: AppStyles.color.white, textAlign: 'left', fontSize: 19, paddingRight: "10%" }}
           name="power-off" size={40}></Icon>
         <Text style={styles.loginText}> Sign Out </Text>
       </TouchableOpacity>
@@ -92,7 +112,7 @@ const Drawer = (props) => {
   );
 }
 
-export default connect(mapStateToProps, null)(Drawer);
+export default connect(mapStateToProps, mapDispatchToProps)(Drawer);
 
 const styles = StyleSheet.create({
   container: {

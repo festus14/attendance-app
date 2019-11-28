@@ -1,22 +1,42 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, BackHandler} from 'react-native';
-import {AppStyles} from '../utility/AppStyles';
-import UserTable from '../components/UserTable';
-import RNSecureKeyStore, {ACCESSIBLE} from 'react-native-secure-key-store';
-import {connect} from 'react-redux';
-import {NavigationEvents} from 'react-navigation';
-import {getUserInfo} from '../actions/AuthAction';
-import { getRolesById } from '../actions/getDetailsById';
-import {getDepartments} from '../actions/getDepartments';
+import React, { Component } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  BackHandler,
+  ScrollView,
+  RefreshControl,
+  ActivityIndicator
+} from 'react-native';
+import { AppStyles } from '../utility/AppStyles';
+import RNSecureKeyStore from 'react-native-secure-key-store';
+import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
+import { getUserInfo } from '../actions/AuthAction';
+import { getRolesById, getDepartmentById } from '../actions/getDetailsById';
+import { getDepartments } from '../actions/getDepartments';
 
 class UserDetailsScreen extends Component {
+
   constructor(props) {
     super(props);
 
-    this.state= {
-      componentJustMounted: false,
-      roles: [],
+    this.state = {
+      componentJustMounted: true
     }
+  }
+
+  capitalizeFirstLetter = input => {
+    let result = input.charAt(0).toUpperCase() + input.slice(1);
+    return result;
+  }
+
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.componentHasMounted();
+    this.waitForRefresh(3000).then(() => {
+      this.setState({ refreshing: false });
+    });
   }
 
   componentHasMounted = async () => {
@@ -27,40 +47,44 @@ class UserDetailsScreen extends Component {
 
     let tokenObject = await RNSecureKeyStore.get('token');
     tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
-    userId = tokenObject.user.id;
+    let userId = tokenObject.user.id
     this.props.getUserInfo(userId);
 
-    let roles = getRolesById(
-      this.props.user.roleIds,
-      this.props.allRoles,
-    ); 
+    let departments = await this.props.getDepartments();
+    if (departments !== "success") {
+      alert("An unknown error occured!")
+    }
 
-      this.setState({
-        componentJustMounted: true,
-        roles: roles,
-      });
-
-      departments = this.props.getDepartments();
+    this.setState({ componentJustMounted: true })
   }
 
-  async componentDidMount(){
-    console.warn('props here ', this.props.departments)
-    if (!this.state.componentJustMounted){
+  waitForRefresh = (timeout) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+  }
+
+  async componentDidMount() {
+    if (!this.state.componentJustMounted) {
       BackHandler.addEventListener(
         'hardwareBackPress',
         this.handleBackButtonClick,
       );
+
+      let tokenObject = await RNSecureKeyStore.get('token');
+      tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
+      let userId = tokenObject.user.id
+      this.props.getUserInfo(userId);
+
+      this.setState({ componentJustMounted: true })
     }
 
-    let tokenObject = await RNSecureKeyStore.get('token');
-    tokenObject = tokenObject ? JSON.parse(tokenObject) : {};
-    userId = tokenObject.user.id;
-    this.props.getUserInfo(userId);
-    let roles = getRolesById(this.props.user.roleIds, this.props.allRoles);
-    this.setState({componentJustMounted: true, roles: roles});
-
-    departments = this.props.getDepartments()
+    let departments = await this.props.getDepartments();
+    if (departments !== "success") {
+      alert("An unknown error occured!")
+    }
   }
+
 
   componentWillUnmount() {
     BackHandler.removeEventListener(
@@ -74,25 +98,130 @@ class UserDetailsScreen extends Component {
   };
 
   render() {
-    const {user} = this.props;
+    const { user } = this.props;
     return (
-      <View style={styles.container}>
-        <NavigationEvents onWillFocus={this.componentHasMounted}/>
-        <View style={styles.body}>
-          <Text style={styles.title}>User Details</Text>
-          <View style={styles.textContainer}>
-            <UserTable
-              firstName={user.firstName}
-              email={user.email}
-              gender={user.gender}
-              lastName={user.lastName}
-              roles={this.state.roles}
-              department={this.state.department}
-              key={user.id}
-            />
-          </View>
+      <ScrollView
+        contentContainerStyle={{ justifyContent: 'center', flex: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+            colors={['#800020']}
+          />
+        }>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <NavigationEvents onWillFocus={this.componentHasMounted} />
+          {this.props.userProps.success && this.props.allRolesProps.success && this.props.allDepartmentsProps.success &&
+            <View
+              style={{
+                width: '100%',
+                backgroundColor: '#800020',
+                alignSelf: 'center',
+                position: 'absolute',
+                marginHorizontal: '15%',
+                marginBottom: '10%',
+                borderRadius: 20,
+                paddingLeft: '3%',
+                paddingRight: '3%',
+                paddingTop: '5%',
+                paddingBottom: '10%',
+                zIndex: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 20,
+                  textAlign: 'center',
+                  borderBottomColor: 'white',
+                  borderBottomWidth: 0.5,
+                  paddingBottom: '2%',
+                  fontWeight: 'bold',
+                  marginBottom: '5%',
+                  marginTop: '10%',
+                  marginLeft: '4%',
+                  marginRight: '4%',
+                }}>
+                {this.capitalizeFirstLetter(this.props.user.firstName) +
+                  ' ' +
+                  this.capitalizeFirstLetter(this.props.user.lastName)}
+              </Text>
+              <View style={{ padding: '5%', marginTop: '5%' }}>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Email: ' + this.props.user.email}
+                </Text>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Gender: ' +
+                    this.capitalizeFirstLetter(this.props.user.gender)}
+                </Text>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Department: ' + this.capitalizeFirstLetter(getDepartmentById(
+                    this.props.user.departmentId,
+                    this.props.allDepartments,
+                  ))
+                  }
+                </Text>
+                <View
+                  style={{
+                    fontSize: 14,
+                    marginBottom: '3%',
+                    flexDirection: 'row',
+                  }}>
+                  <Text style={{ fontSize: 14, color: 'white' }}>Role(s):</Text>
+                  {getRolesById(this.props.user.roleIds, this.props.allRoles).map(
+                    (role, index) => {
+                      return (
+                        <Text style={{ marginLeft: '3%', color: 'white' }} key={role}>
+                          {index !== this.props.user.roleIds.length - 1
+                            ? role + ','
+                            : role}
+                        </Text>
+                      );
+                    },
+                  )}
+                </View>
+
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {this.props.inside
+                    ? 'Current Location: In office'
+                    : 'Current Location: Out of office'}
+                </Text>
+              </View>
+            </View>
+          }
+          {this.props.userProps.loading || this.props.allDepartmentsProps.loading &&
+            <View
+              style={{ justifyContent: 'center', flex: 1, position: 'absolute' }}>
+              <ActivityIndicator
+                size="large"
+                style={{ flex: 1, marginLeft: "50%" }}
+                color="#800020"
+              />
+            </View>
+          }
+          {this.props.user.error !== null &&
+            this.props.user.loading === false &&
+            this.props.user.error !== undefined && (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  marginVertical: 0,
+                  position: 'absolute',
+                  margin: '10%',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 21,
+                    color: '#800020',
+                    alignSelf: 'center',
+                    textAlign: 'center',
+                  }}>
+                  {getErrorMessage(this.props.user.error.toString()) +
+                    ', please try again.'}
+                </Text>
+              </View>
+            )}
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -139,8 +268,11 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => ({
   user: state.authReducer.user,
-  allRoles: state.getRoles.roles,
-  departments: state.getDepartments.departments,
-});
+  userProps: state.authReducer,
+  allRoles: state.getRoles.appRoles,
+  allRolesProps: state.getRoles,
+  allDepartments: state.getDepartments.departments,
+  allDepartmentsProps: state.getDepartments
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsScreen);

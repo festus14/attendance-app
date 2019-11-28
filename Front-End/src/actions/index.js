@@ -1,4 +1,3 @@
-import CheckAlert from 'react-native-awesome-alert';
 import axios from 'axios';
 import { APIURL } from '../utility/config';
 import { successResponse, failureResponse } from './response.js';
@@ -9,21 +8,12 @@ import { getAllUsers } from './getAllUsers';
 import { getUserScanLogs } from './getUserScanLogs';
 import { getRoles } from './getRoles';
 
-export const alertNotification = () => {
-    onPressSimpleAlert = () => {
-        CheckAlert.alert('Hello!!', SimpleView, [
-            { text: 'OK', onPress: () => console.log('OK touch') },
-            { text: 'Cancel', onPress: () => console.log('Cancel touch') },
-        ]);
-    };
-};
-
 export const getNewBarcodeString = (endPoint, requestMethod) => {
     try {
         return (dispatch) => dispatch(getBarcodeString(endPoint, requestMethod));
     }
     catch (error) {
-        alert("An error occurred, please try again later")
+       console.log(error)
     }
 }
 
@@ -32,7 +22,7 @@ export const getAllRegisteredUsers = (endPoint, requestMethod) => {
         return (dispatch) => dispatch(getAllUsers(endPoint, requestMethod));
     }
     catch (error) {
-        alert("An error occurred, please try again later")
+        console.log(error)
     }
 }
 
@@ -95,7 +85,6 @@ export function request(formData, endPoint, requestMethod, token) {
             return true;
         }
         catch (error) {
-            // alert(error)
             let errorMessage;
             if (error.response === undefined) {
                 errorMessage = error;

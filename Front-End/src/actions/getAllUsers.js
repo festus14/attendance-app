@@ -8,7 +8,7 @@ import {
 
 export const getAllUsers = (endPoint, requestMethod) => {
     return async(dispatch) => {
-        let token = await dispatch(getToken());
+        let token = await dispatch(await getToken());
         try {
             dispatch(getAllUsersStarted());
             return dispatch(request(null, endPoint, requestMethod, token));

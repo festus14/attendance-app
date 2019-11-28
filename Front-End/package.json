@@ -1,5 +1,5 @@
 {
-    "name": "AttendanceApp",
+    "name": "Attendance",
     "version": "0.0.1",
     "private": true,
     "scripts": {
@@ -15,7 +15,6 @@
         "moment": "^2.24.0",
         "react": "16.9.0",
         "react-native": "0.61.3",
-        "react-native-awesome-alert": "^0.4.5",
         "react-native-camera": "^3.9.0",
         "react-native-drawer": "^2.5.1",
         "react-native-fast-image": "^7.0.2",

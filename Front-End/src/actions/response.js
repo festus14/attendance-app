@@ -10,11 +10,10 @@ import { getRolesSuccess, getRolesFailure } from './getRoles.js';
 export function successResponse(response, endPoint, requestMethod) {
     let endPointPrefix = endPoint.split('/')[0];
     let endPointSuffix = endPoint.split('/')[1];
-    console.log(endPointSuffix)
     if (endPointSuffix !== "department" && endPointSuffix !== "dashboard" && endPointPrefix === "modules" && requestMethod === "get" && endPointSuffix !== undefined) {
         endPointSuffix = parseInt(endPointSuffix, 10);
     }
-    console.log(endPointPrefix + " " + endPointSuffix);
+ 
     switch (endPointPrefix) {
         case 'barcode':
             return async (dispatch) => {
@@ -55,7 +54,6 @@ export function successResponse(response, endPoint, requestMethod) {
 }
 
 export function failureResponse(error, endPoint, requestMethod) {
-    // alert("7")
     let endPointPrefix = endPoint.split('/')[0];
     let endPointSuffix = endPoint.split('/')[1];
     if (endPointSuffix !== "department" && endPointPrefix === "modules" && requestMethod === "get" && endPointSuffix !== undefined) {
@@ -65,11 +63,9 @@ export function failureResponse(error, endPoint, requestMethod) {
         case 'barcode':
             return async (dispatch) => {
                 if (requestMethod === "get") {
-                    alert(error)
                     dispatch(getBarcodeStringFailure(error));
                 }
                 else if (requestMethod === "post") {
-                    console.warn(error)
                     dispatch(sendBarcodeStringFailure(error));
                 }
             }

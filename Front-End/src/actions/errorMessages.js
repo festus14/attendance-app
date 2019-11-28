@@ -1,5 +1,4 @@
 export function getErrorMessage(type) {
-    console.log(type)
     switch (type) {
         case "BARCODE_NOT_LATEST":
             return "This barcode is not the latest, try refreshing the barcode generator screen."
@@ -11,7 +10,7 @@ export function getErrorMessage(type) {
             return "This account does not exist."
         case "INVALID_FIRSTNAME":
             return "Firstname cannot contain numbers or special characters."
-        case "UNAUTHORIZED":
+        case "NO_ACCESS":
             return "Unauthorized! Login again";
         case "Error: Network Error":
             return "Network Error"

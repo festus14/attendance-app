@@ -6,13 +6,16 @@ import { getNewBarcodeString } from '../actions/index';
 import { getErrorMessage } from "../actions/errorMessages";
 import SockJsClient from 'react-stomp';
 import { APIURL } from "../utility/config";
-import StompClient from "react-stomp-client";
+import { getToken } from "../actions/AuthAction";
 
 
 const mapDispatchToProps = dispatch => {
     return {
         getBarcodeString: () => {
             return dispatch(getNewBarcodeString('barcode/current', 'get'))
+        },
+        getUser: () => {
+            return dispatch(getToken());
         }
     }
 }
@@ -36,14 +39,13 @@ class BarcodeGeneratorScreen extends React.Component {
 
 
     async componentDidMount() {
+        let token = await this.props.getUser();
         this.setState({
-            token: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbkBzdHJhbnNhY3QuY29tIiwiZXhwIjoxNTc2MjM3ODk1LCJpYXQiOjE1NzM2NDU4OTUsInJlZnJlc2hJZCI6ImV5SmhiR2NpT2lKSVV6VXhNaUo5LmV5SnpkV0lpT2lKaFpHMXBia0J6ZEhKaGJuTmhZM1F1WTI5dE1UVTNNelkwTlRnNU5UTXlOeUlzSW1WNGNDSTZNVFUzTXpneE9EWTVOU3dpYVdGMElqb3hOVGN6TmpRMU9EazFmUS5HWjZ3VzBCVEYtN0dYbnNibnc1SUtmQVk2Yll2NHFYM2pRaHNRMWJ4U3BCNDUyQUhFV3BBVHJQRWtkWm9nUUJIZERZYzQtYllfb0Jqc0U5MmNZWTc5dyJ9.v4MvJ3gf1Re14JlyQvs3vdDKXZ1aSrQsYsNnhpbX95JXwleRon-XJT1Rqm_IRJatrPdf9eE59ySmJjGiP0Fsyg"
-
+            token: token
         })
         if (!this.state.doNotFetchBarcode) {
             let barcodeString = await this.props.getBarcodeString();
             if (barcodeString) {
-                console.log(this.props.barcodeString.barcodeString.barString)
                 await this.setState({
                     barcodeString: this.props.barcodeString.barcodeString.barString,
                     doNotFetchBarcode: true
@@ -61,8 +63,6 @@ class BarcodeGeneratorScreen extends React.Component {
             barcodeMessageChanged: true,
             barcodeString: message.barString
         });
-
-        console.log(this.state.barcodeMessage)
     }
 
     render() {
@@ -85,6 +85,7 @@ class BarcodeGeneratorScreen extends React.Component {
                         'Access-Control-Allow-Credentials': true,
                         'Content-Type': 'application/json',
                         'Cross-Origin': true,
+                        
                         'Accept': 'application/json',
                         'CORS': true,
                         'Authorization': "Bearer " + this.state.token
