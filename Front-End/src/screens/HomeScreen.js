@@ -167,13 +167,6 @@ class HomeScreen extends Component {
     }
   };
 
-  getDrawerDetails = async () => {
-    let roles = await this.props.getCreatedRoles();
-    if (roles) {
-      // console.log(this.props.allRoles, "akkk")
-    }
-  }
-
   isAGenerator = () => {
     let user_roles = getRolesById(this.props.user.roleIds, this.props.allRoles.appRoles);
     if (user_roles.includes("GENERATOR")) {
@@ -212,7 +205,6 @@ class HomeScreen extends Component {
             drawerPosition="left"
             style={{ flex: 1, zIndex: 1000 }}
             ref={'DRAWER'}
-            onDrawerOpen={this.getDrawerDetails}
             renderNavigationView={() => {
               return (
                 <Drawer propss={this.props} roles={this.props.allRoles} hasGenRights={this.state.hasOtherRights} />
