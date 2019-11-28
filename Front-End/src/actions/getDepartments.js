@@ -4,22 +4,20 @@ import { APIURL } from '../utility/config';
 import { getToken } from './AuthAction';
 
 export const getDepartments = () => async dispatch => {
-    dispatch(departmentLoading());
     try {
+        dispatch(departmentLoading());
         let token = await dispatch(getToken());
         let res = await axios.get(`${APIURL}departments/`, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.warn('departments obj', res.data.data.departments);
         if (!res.data.success) {
             return res.data.message;
         }
         if (res.data.data !== undefined) {
             await dispatch(setDepartment(res.data.data));
         }
-        return '';
+        return 'success';
     } catch (error) {
-        console.warn(error);
         return error.data.message;
     }
 };

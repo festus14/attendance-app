@@ -5,14 +5,15 @@ import {
   View,
   BackHandler,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  ActivityIndicator
 } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
 import RNSecureKeyStore from 'react-native-secure-key-store';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
 import { getUserInfo } from '../actions/AuthAction';
-import {getRolesById, getDepartmentById} from '../actions/getDetailsById';
+import { getRolesById, getDepartmentById } from '../actions/getDetailsById';
 import { getDepartments } from '../actions/getDepartments';
 
 class UserDetailsScreen extends Component {
@@ -49,8 +50,10 @@ class UserDetailsScreen extends Component {
     let userId = tokenObject.user.id
     this.props.getUserInfo(userId);
 
-    let departments = this.props.getDepartments();
-    console.warn(departments);
+    let departments = await this.props.getDepartments();
+    if (departments !== "success") {
+      alert("An unknown error occured!")
+    }
 
     this.setState({ componentJustMounted: true })
   }
@@ -76,8 +79,10 @@ class UserDetailsScreen extends Component {
       this.setState({ componentJustMounted: true })
     }
 
-    let departments = this.props.getDepartments();
-    console.warn(departments);
+    let departments = await this.props.getDepartments();
+    if (departments !== "success") {
+      alert("An unknown error occured!")
+    }
   }
 
 
@@ -96,7 +101,7 @@ class UserDetailsScreen extends Component {
     const { user } = this.props;
     return (
       <ScrollView
-        contentContainerStyle={{justifyContent: 'center', flex: 1}}
+        contentContainerStyle={{ justifyContent: 'center', flex: 1 }}
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
@@ -104,98 +109,95 @@ class UserDetailsScreen extends Component {
             colors={['#800020']}
           />
         }>
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           <NavigationEvents onWillFocus={this.componentHasMounted} />
-
-          <View
-            style={{
-              width: '100%',
-              backgroundColor: '#800020',
-              alignSelf: 'center',
-              position: 'absolute',
-              marginHorizontal: '15%',
-              marginBottom: '10%',
-              borderRadius: 20,
-              paddingLeft: '3%',
-              paddingRight: '3%',
-              paddingTop: '5%',
-              paddingBottom: '10%',
-              zIndex: 5,
-            }}>
-            <Text
-              style={{
-                color: 'white',
-                fontSize: 20,
-                textAlign: 'center',
-                borderBottomColor: 'white',
-                borderBottomWidth: 0.5,
-                paddingBottom: '2%',
-                fontWeight: 'bold',
-                marginBottom: '5%',
-                marginTop: '10%',
-                marginLeft: '4%',
-                marginRight: '4%',
-              }}>
-              {this.capitalizeFirstLetter(this.props.user.firstName) +
-                ' ' +
-                this.capitalizeFirstLetter(this.props.user.lastName)}
-            </Text>
-            <View style={{padding: '5%', marginTop: '5%'}}>
-              <Text style={{fontSize: 14, marginBottom: '3%', color: 'white'}}>
-                {'Email: ' + this.props.user.email}
-              </Text>
-              <Text style={{fontSize: 14, marginBottom: '3%', color: 'white'}}>
-                {'Gender: ' +
-                  this.capitalizeFirstLetter(this.props.user.gender)}
-              </Text>
-              <Text style={{fontSize: 14, marginBottom: '3%', color: 'white'}}>
-                {'Department: ' +
-                  getDepartmentById(
-                    this.props.user.departmentId,
-                    this.props.allDepartments,
-                  )[0].toUpperCase() +
-                  getDepartmentById(
-                    this.props.user.departmentId,
-                    this.props.allDepartments,
-                  ).slice(1)}
-              </Text>
-              <View
-                style={{
-                  fontSize: 14,
-                  marginBottom: '3%',
-                  flexDirection: 'row',
-                }}>
-                <Text style={{fontSize: 14, color: 'white'}}>Role(s):</Text>
-                {getRolesById(this.props.user.roleIds, this.props.allRoles).map(
-                  (role, index) => {
-                    return (
-                      <Text style={{marginLeft: '3%', color: 'white'}}>
-                        {index !== this.props.user.roleIds.length - 1
-                          ? role + ','
-                          : role}
-                      </Text>
-                    );
-                  },
-                )}
-              </View>
-
-              <Text style={{fontSize: 14, marginBottom: '3%', color: 'white'}}>
-                {this.props.inside
-                  ? 'Current Location: In office'
-                  : 'Current Location: Out of office'}
-              </Text>
-            </View>
-          </View>
-          {this.props.user.loading && (
+          {this.props.userProps.success && this.props.allRolesProps.success && this.props.allDepartmentsProps.success &&
             <View
-              style={{justifyContent: 'center', flex: 1, position: 'absolute'}}>
+              style={{
+                width: '100%',
+                backgroundColor: '#800020',
+                alignSelf: 'center',
+                position: 'absolute',
+                marginHorizontal: '15%',
+                marginBottom: '10%',
+                borderRadius: 20,
+                paddingLeft: '3%',
+                paddingRight: '3%',
+                paddingTop: '5%',
+                paddingBottom: '10%',
+                zIndex: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 20,
+                  textAlign: 'center',
+                  borderBottomColor: 'white',
+                  borderBottomWidth: 0.5,
+                  paddingBottom: '2%',
+                  fontWeight: 'bold',
+                  marginBottom: '5%',
+                  marginTop: '10%',
+                  marginLeft: '4%',
+                  marginRight: '4%',
+                }}>
+                {this.capitalizeFirstLetter(this.props.user.firstName) +
+                  ' ' +
+                  this.capitalizeFirstLetter(this.props.user.lastName)}
+              </Text>
+              <View style={{ padding: '5%', marginTop: '5%' }}>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Email: ' + this.props.user.email}
+                </Text>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Gender: ' +
+                    this.capitalizeFirstLetter(this.props.user.gender)}
+                </Text>
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {'Department: ' + this.capitalizeFirstLetter(getDepartmentById(
+                    this.props.user.departmentId,
+                    this.props.allDepartments,
+                  ))
+                  }
+                </Text>
+                <View
+                  style={{
+                    fontSize: 14,
+                    marginBottom: '3%',
+                    flexDirection: 'row',
+                  }}>
+                  <Text style={{ fontSize: 14, color: 'white' }}>Role(s):</Text>
+                  {getRolesById(this.props.user.roleIds, this.props.allRoles).map(
+                    (role, index) => {
+                      return (
+                        <Text style={{ marginLeft: '3%', color: 'white' }} key={role}>
+                          {index !== this.props.user.roleIds.length - 1
+                            ? role + ','
+                            : role}
+                        </Text>
+                      );
+                    },
+                  )}
+                </View>
+
+                <Text style={{ fontSize: 14, marginBottom: '3%', color: 'white' }}>
+                  {this.props.inside
+                    ? 'Current Location: In office'
+                    : 'Current Location: Out of office'}
+                </Text>
+              </View>
+            </View>
+          }
+          {this.props.userProps.loading || this.props.allDepartmentsProps.loading &&
+            <View
+              style={{ justifyContent: 'center', flex: 1, position: 'absolute' }}>
               <ActivityIndicator
                 size="large"
-                style={{flex: 1, marginHorizontal: '40%'}}
+                style={{ flex: 1, marginLeft: "50%" }}
                 color="#800020"
               />
             </View>
-          )}
+          }
           {this.props.user.error !== null &&
             this.props.user.loading === false &&
             this.props.user.error !== undefined && (
@@ -266,8 +268,11 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => ({
   user: state.authReducer.user,
-  allRoles: state.getRoles.roles,
-  allDepartments: state.getDepartments.departments
+  userProps: state.authReducer,
+  allRoles: state.getRoles.appRoles,
+  allRolesProps: state.getRoles,
+  allDepartments: state.getDepartments.departments,
+  allDepartmentsProps: state.getDepartments
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsScreen);

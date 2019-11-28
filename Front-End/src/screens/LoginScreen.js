@@ -41,7 +41,6 @@ class LoginScreen extends Component {
   }
 
   componentDidMount() {
-    alert("here")
     this.props.navigation.navigate("Auth")
     BackHandler.addEventListener(
       'hardwareBackPress',

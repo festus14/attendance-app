@@ -13,6 +13,9 @@ const mapDispatchToProps = dispatch => {
     return {
         getBarcodeString: () => {
             return dispatch(getNewBarcodeString('barcode/current', 'get'))
+        },
+        getUser: () => {
+            return dispatch(getToken());
         }
     }
 }
@@ -36,7 +39,7 @@ class BarcodeGeneratorScreen extends React.Component {
 
 
     async componentDidMount() {
-        let token = await dispatch(await getToken());
+        let token = await this.props.getUser();
         this.setState({
             token: token
         })
@@ -82,6 +85,7 @@ class BarcodeGeneratorScreen extends React.Component {
                         'Access-Control-Allow-Credentials': true,
                         'Content-Type': 'application/json',
                         'Cross-Origin': true,
+                        
                         'Accept': 'application/json',
                         'CORS': true,
                         'Authorization': "Bearer " + this.state.token

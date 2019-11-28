@@ -11,11 +11,12 @@ export const getRolesById = (roleId, allRoles) => {
 }
 
 export const getDepartmentById = (departmentId, allDepartments) => {
-    console.log(departmentId, allDepartments)
-    let department = allDepartments.map(department => {
+    console.log(departmentId, allDepartments, "all")
+    let departmentName = ""
+    allDepartments.forEach(department => {
         if (department.id === departmentId) {
-            return department.name;
+            departmentName = department.name;
         }
     });
-    return department[0];
+    return departmentName;
 }
