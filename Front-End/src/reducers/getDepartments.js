@@ -3,6 +3,7 @@ import { GET_DEPARTMENTS, DEPARTMENT_LOADING } from '../actions/types';
 const initialState = {
     departments: [],
     loading: false,
+    success: false
 };
 
 export default function(state = initialState, action) {
@@ -12,11 +13,13 @@ export default function(state = initialState, action) {
                 ...state,
                 ...action.payload,
                 loading: false,
+                success: true
             };
         case DEPARTMENT_LOADING:
             return {
                 ...state,
                 loading: true,
+                success: false
             };
         default:
             return state;

@@ -24,7 +24,6 @@ const mapDispatchToProps = dispatch => {
   return {
     logOut: () => dispatch(logOut()),
     getLogsPerUser: (formData) => {
-      console.log(formData, ";''''")
       let param = formData.from + "&to=" + formData.to + "&user_id=" + formData.user_id + "&param="
       return dispatch(getScanLogsPerUser(null, 'logs/user_logs/?from=' + param, 'get'))
     },
@@ -69,7 +68,6 @@ class HomeScreen extends Component {
 
     let roles = await this.props.getCreatedRoles();
     let user = await this.props.getUser();
-      console.log(this.props.user.error, "wdjv")
     let formData = {
       "from": new Date("Sat Jan 03 1970 10:10:00 GMT+0100 (WAT)").getTime(),
       "to": new Date().getTime(),
@@ -105,8 +103,7 @@ class HomeScreen extends Component {
 
       let roles = await this.props.getCreatedRoles();
       let user = await this.props.getUser();
-        console.log(this.props.user, "wajev;o")
-        console.log(this.props.userLogs.error, "wdjv")
+      console.log(this.props.user, "wajev;o")
       let formData = {
         from: new Date(' Sat Jan 03 1970 00:00:00 GMT+0100 (WAT)').getTime(),
         to: new Date().getTime(),
@@ -115,6 +112,7 @@ class HomeScreen extends Component {
 
       if (roles) {
         let userLog = await this.props.getLogsPerUser(formData);
+        console.log(this.props.allRoles, this.props.userLogs.userScanLogs)
         if (userLog) {
           this.setState({
             ...this.props.userLogs.userScanLogs
@@ -151,23 +149,33 @@ class HomeScreen extends Component {
     this.props.navigation.goBack();
   };
 
-  toggleDrawer = () => {
-    if (this.state.drawerOpen) {
-      this.refs['DRAWER'].closeDrawer();
-      this.setState({
-        drawerOpen: false,
-      });
-    } else {
-      this.refs['DRAWER'].openDrawer();
-      this.setState({
-        drawerOpen: true,
-      });
+  toggleDrawer = async () => {
+    let roles = await this.props.getCreatedRoles();
+    if (roles) {
+      // console.log(this.props.allRoles, "all")
+      if (this.state.drawerOpen) {
+        this.refs['DRAWER'].closeDrawer();
+        this.setState({
+          drawerOpen: false,
+        });
+      } else {
+        this.refs['DRAWER'].openDrawer();
+        this.setState({
+          drawerOpen: true,
+        });
+      }
     }
   };
 
-  isAGenerator = () => {
-    let user_roles = getRolesById(this.props.user.roleIds, this.props.allRoles.roles);
+  getDrawerDetails = async () => {
+    let roles = await this.props.getCreatedRoles();
+    if (roles) {
+      // console.log(this.props.allRoles, "akkk")
+    }
+  }
 
+  isAGenerator = () => {
+    let user_roles = getRolesById(this.props.user.roleIds, this.props.allRoles.appRoles);
     if (user_roles.includes("GENERATOR")) {
       this.setState({ hasGenRights: true })
     }
@@ -197,18 +205,18 @@ class HomeScreen extends Component {
         refreshControl={
           <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh} colors={["#800020"]} />
         }>
-        <AuthLoadingScreen />
+        <NavigationEvents onWillFocus={this.componentHasMounted} />
         <View style={{ flex: 1, justifyContent: "center" }}>
-          <NavigationEvents onWillFocus={this.componentHasMounted} />
-          <DrawerLayoutAndroid
+        <DrawerLayoutAndroid
             drawerWidth={300}
             drawerPosition="left"
             style={{ flex: 1, zIndex: 1000 }}
             ref={'DRAWER'}
+            onDrawerOpen={this.getDrawerDetails}
             renderNavigationView={() => {
               return (
-                <Drawer propss={this.props} />
-              );
+                <Drawer propss={this.props} roles={this.props.allRoles} hasGenRights={this.state.hasOtherRights} />
+              )
             }}
           >
             <HomeHeader

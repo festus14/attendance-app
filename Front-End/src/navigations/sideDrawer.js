@@ -3,9 +3,18 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getRolesById } from "../actions/getDetailsById";
+import { getAllRoles } from "../actions/index";
 import { connect } from 'react-redux';
 import { getToken } from '../actions/AuthAction';
 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getCreatedRoles: () => {
+      return dispatch(getAllRoles('roles', "get"))
+    }
+  }
+}
 
 const mapStateToProps = state => ({
   userLogs: state.getUserScanLogs,
@@ -15,20 +24,18 @@ const mapStateToProps = state => ({
 
 
 const Drawer = (props) => {
+
   const [hasAdminRights, setHasAdminRights] = useState(false);
   const [hasGeneratorRights, setHasGeneratorRights] = useState(false);
 
 
   useEffect(() => {
-    console.log(props.user, "oj")
-      let user_roles = getRolesById(props.user.roleIds, props.allRoles.roles);
-      if (user_roles.includes("ADMIN")) {
-        alert("here")
-        setHasAdminRights(true);
-      }
-      else if (user_roles.includes("GENERATOR")) {
-        setHasGeneratorRights(true);
-      }
+    if (props.user.roleIds.includes(3)) {
+      setHasGeneratorRights(true);
+    }
+    else if (props.user.roleIds.includes(2)) {
+      setHasAdminRights((true));
+    }
   }, [])
 
   const _showUserDetails = () => {
@@ -105,7 +112,7 @@ const Drawer = (props) => {
   );
 }
 
-export default connect(mapStateToProps, null)(Drawer);
+export default connect(mapStateToProps, mapDispatchToProps)(Drawer);
 
 const styles = StyleSheet.create({
   container: {
