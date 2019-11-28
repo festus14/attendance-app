@@ -8,7 +8,6 @@ import {
   RefreshControl
 } from 'react-native';
 import { AppStyles } from '../utility/AppStyles';
-import UserTable from '../components/UserTable';
 import RNSecureKeyStore from 'react-native-secure-key-store';
 import { connect } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
