@@ -127,3 +127,4 @@ export const getUserInfo = userId => async dispatch => {
         return error.response ? error.response.data.message : error;
     }
 };
+
