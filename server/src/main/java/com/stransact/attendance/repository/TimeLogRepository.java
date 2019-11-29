@@ -17,9 +17,6 @@ import java.util.List;
  */
 @Repository
 public interface TimeLogRepository extends JpaRepository<TimeLog, Long> {
-    @Query(value = "SELECT * FROM time_logs WHERE id = :id", nativeQuery = true)
-    TimeLog findDeletedById(@Param("id") long id);
-
     List<TimeLog> findTimeLogsByUserId(long id, Sort sort);
     List<TimeLog> findTimeLogByCreatedAtAfterAndCreatedAtBefore(Date from, Date to);
     List<TimeLog> findTimeLogByCreatedAtAfterAndCreatedAtBeforeAndUserId(Date from, Date to, Long id, Sort sort);

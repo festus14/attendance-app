@@ -111,7 +111,8 @@ public class InitialDataLoader implements ApplicationListener<ApplicationReadyEv
         Department barcodeDept = createDepartmentIfNotFound("barcode");
 
         createUserIfNotFound("admin@stransact.com", "Admin", "Admin", "1", new HashSet<>(Arrays.asList(adminRole, employeeRole)), adminDept);
-        createUserIfNotFound("generator@stransact.com", "Barcode", "Generator", "2", new HashSet<>(Collections.singleton(generatorRole)), barcodeDept);
+        createUserIfNotFound("generator@stransact.com", "Barcode", "Generator", "2", new HashSet<>(Arrays.asList(generatorRole, employeeRole)), barcodeDept);
+        createUserIfNotFound("demo@stransact.com", "Demo", "Demo", "3", new HashSet<>(Collections.singleton(employeeRole)), itDept);
         createBarcodeIfNotFound();
         alreadySetup = true;
     }

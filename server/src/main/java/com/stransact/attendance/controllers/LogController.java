@@ -67,14 +67,12 @@ public class LogController {
 
     @GetMapping("/user_logs")
     public ResponseEntity<SuccessResponse> getAbsentAndPresentTimestamp(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam("user_id") String userId) throws ResourceNotFoundException, UnauthorizedException {
-        if (!authorizationMiddleware.isAuthorized(endPoint, "READ_ANY_PRIVILEGE"))
-            throw new UnauthorizedException(noAccessError);
+        User user = validateUser("READ", Long.valueOf(userId));
 
         Date fromDate = new Date(Long.valueOf(from));
         Date toDate = new Date(Long.valueOf(to));
         if (new Date().before(toDate)) toDate = new Date();
 
-        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND"));
         if (user.getCreatedAt().after(fromDate)) fromDate = user.getCreatedAt();
 
         List<TimeLog> timeLogs = timeLogRepository.findTimeLogByCreatedAtAfterAndCreatedAtBeforeAndUserId(fromDate, toDate, Long.valueOf(userId), Sort.by(Sort.Direction.ASC, "createdAt"));
@@ -110,5 +108,18 @@ public class LogController {
         responseData.put("user", user);
         responseData.put("lastLog", timeLogs.size() > 0 ? timeLogs.get(timeLogs.size()-1) : null);
         return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.toString(), responseData));
+    }
+
+    private User validateUser(String privilege, long userId) throws UnauthorizedException, ResourceNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authUser = (User) authentication.getPrincipal();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND"));
+
+        if (authUser.getId() != user.getId() && !authorizationMiddleware.isAuthorized(endPoint, privilege + "_ANY_PRIVILEGE")) {
+            throw new UnauthorizedException(noAccessError);
+        }
+
+        return user;
     }
 }
