@@ -147,22 +147,10 @@ class LoginScreen extends Component {
         <View>
           <TouchableOpacity
             style={styles.loginContainer}
-            onPress={
-              displayPassword
-                ? () => this.onPressLogin()
-                : () => this.onPressSubmitForgotPassword()
+            onPress={ () => this.onPressLogin()
             }>
             <Text style={styles.loginText}>
-              {displayPassword ? 'Login' : 'Submit'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.loginContainer}
-            onPress={() =>
-              this.setState({ displayPassword: !displayPassword })
-            }>
-            <Text style={styles.loginText}>
-              {displayPassword ? 'Forgot Password' : 'Login'}
+              Login
             </Text>
           </TouchableOpacity>
         </View>
