@@ -3,13 +3,16 @@ package com.stransact.attendance;
 import com.stransact.attendance.exceptions.ValidationException;
 import com.stransact.attendance.models.*;
 import com.stransact.attendance.repository.*;
+import com.stransact.attendance.services.Utils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.transaction.Transactional;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -19,7 +22,7 @@ import java.util.*;
  */
 @Component
 public class InitialDataLoader implements ApplicationListener<ApplicationReadyEvent> {
-    public InitialDataLoader(UserRepository userRepository, RoleRepository roleRepository, PrivilegeRepository privilegeRepository, DepartmentRepository departmentRepository, PermissionRepository permissionRepository, RolesPermissionsRepository rolesPermissionsRepository, BCryptPasswordEncoder passwordEncoder) {
+    public InitialDataLoader(UserRepository userRepository, BarcodeRepository barcodeRepository, RoleRepository roleRepository, PrivilegeRepository privilegeRepository, DepartmentRepository departmentRepository, PermissionRepository permissionRepository, RolesPermissionsRepository rolesPermissionsRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.privilegeRepository = privilegeRepository;
@@ -27,11 +30,13 @@ public class InitialDataLoader implements ApplicationListener<ApplicationReadyEv
         this.permissionRepository = permissionRepository;
         this.rolesPermissionsRepository = rolesPermissionsRepository;
         this.passwordEncoder = passwordEncoder;
+        this.barcodeRepository = barcodeRepository;
     }
 
     private boolean alreadySetup = false;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BarcodeRepository barcodeRepository;
     private final PrivilegeRepository privilegeRepository;
     private final DepartmentRepository departmentRepository;
     private final PermissionRepository permissionRepository;
@@ -63,42 +68,52 @@ public class InitialDataLoader implements ApplicationListener<ApplicationReadyEv
 //        Permissions for controllers here
         Permission usersPermission = createPermissionIfNotFound("users");
         Permission departmentPermission = createPermissionIfNotFound("departments");
-        Permission questionPermission = createPermissionIfNotFound("questions");
+        Permission barcodesPermission = createPermissionIfNotFound("barcodes");
+        Permission logsPermission = createPermissionIfNotFound("logs");
         Permission rolePermission = createPermissionIfNotFound("roles");
         Permission permissionPermission = createPermissionIfNotFound("permissions");
         Permission privilegePermission = createPermissionIfNotFound("privileges");
 
         Role employeeRole = createRoleIfNotFound("ROLE_EMPLOYEE");
         Role adminRole = createRoleIfNotFound("ROLE_ADMIN");
+        Role generatorRole = createRoleIfNotFound("ROLE_GENERATOR");
 
 //        Admin has access to all
         Set<Privilege> adminPrivileges = new HashSet<>(Arrays.asList(readAnyPrivilege, readOwnPrivilege, writeAnyPrivilege, writeOwnPrivilege, deleteAnyPrivilege, deleteOwnPrivilege));
         Set<Permission> adminPermissions = new HashSet<>(Arrays.asList(usersPermission, departmentPermission,
-                questionPermission, rolePermission, permissionPermission, privilegePermission));
+                barcodesPermission, rolePermission, permissionPermission, privilegePermission, logsPermission));
         for (Privilege privilege : adminPrivileges) {
             for (Permission permission : adminPermissions) {
-                RolesPermissions rolesPermissions = new RolesPermissions();
-                rolesPermissions.setPermission(permission);
-                rolesPermissions.setPrivilege(privilege);
-                rolesPermissions.setRole(adminRole);
-                rolesPermissionsRepository.save(rolesPermissions);
+                createRolePermissionsIfNotFound(privilege, permission, adminRole);
             }
         }
 
 //        employee has controlled access
         Set<Permission> employeePermissions = new HashSet<>(Arrays.asList(usersPermission, departmentPermission,
-                questionPermission, rolePermission, permissionPermission, privilegePermission));
+                barcodesPermission, rolePermission, permissionPermission, privilegePermission, logsPermission));
         for (Permission permission : employeePermissions) {
-            RolesPermissions rolesPermissions = new RolesPermissions();
-            rolesPermissions.setPrivilege(readOwnPrivilege);
-            rolesPermissions.setPermission(permission);
-            rolesPermissions.setRole(employeeRole);
-            rolesPermissionsRepository.save(rolesPermissions);
+            createRolePermissionsIfNotFound(readOwnPrivilege, permission, employeeRole);
         }
 
-        Department dept = createDepartmentIfNotFound("finance");
+        Set<Privilege> generatorPrivileges = new HashSet<>(Arrays.asList(readAnyPrivilege, writeAnyPrivilege));
+        Set<Permission> generatorPermissions = new HashSet<>(Arrays.asList(usersPermission, departmentPermission, rolePermission, permissionPermission, privilegePermission, logsPermission));
+        for (Permission permission : generatorPermissions) {
+            createRolePermissionsIfNotFound(readOwnPrivilege, permission, generatorRole);
+        }
 
-        createUserIfNotFound(new HashSet<>(Arrays.asList(adminRole, employeeRole)), dept);
+        for (Privilege privilege : generatorPrivileges) {
+            createRolePermissionsIfNotFound(privilege, barcodesPermission, generatorRole);
+        }
+
+        Department financeDept = createDepartmentIfNotFound("finance");
+        Department adminDept = createDepartmentIfNotFound("admin");
+        Department itDept = createDepartmentIfNotFound("IT");
+        Department barcodeDept = createDepartmentIfNotFound("barcode");
+
+        createUserIfNotFound("admin@stransact.com", "Admin", "Admin", "1", new HashSet<>(Arrays.asList(adminRole, employeeRole)), adminDept);
+        createUserIfNotFound("generator@stransact.com", "Barcode", "Generator", "2", new HashSet<>(Arrays.asList(generatorRole, employeeRole)), barcodeDept);
+        createUserIfNotFound("demo@stransact.com", "Demo", "Demo", "3", new HashSet<>(Collections.singleton(employeeRole)), itDept);
+        createBarcodeIfNotFound();
         alreadySetup = true;
     }
 
@@ -117,6 +132,37 @@ public class InitialDataLoader implements ApplicationListener<ApplicationReadyEv
             privilege = privilegeRepository.save(privilege);
         }
         return privilege;
+    }
+
+    @Transactional
+    protected Barcode createBarcodeIfNotFound() {
+        try {
+            List<Barcode> barcodes = barcodeRepository.findAll(Sort.by(Sort.Direction.ASC, "createdAt"));
+            if (barcodes.size() == 0) {
+                String barString = Utils.hashString(String.valueOf((new Date()).getTime()));
+
+                Barcode barcode = new Barcode();
+                barcode.setBarString(barString);
+                barcodes.add(barcodeRepository.save(barcode));
+            }
+
+            return barcodes.get(barcodes.size() - 1);
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
+    }
+
+    @Transactional
+    protected RolesPermissions createRolePermissionsIfNotFound(Privilege privilege, Permission permission, Role role) {
+        RolesPermissions rolesPermissions = rolesPermissionsRepository.findByRoleIdAndPermissionNameAndPrivilegeName(role.getId(), permission.getName(), privilege.getName());
+        if (rolesPermissions == null) {
+            rolesPermissions = new RolesPermissions();
+            rolesPermissions.setPermission(permission);
+            rolesPermissions.setPrivilege(privilege);
+            rolesPermissions.setRole(role);
+            rolesPermissions = rolesPermissionsRepository.save(rolesPermissions);
+        }
+        return rolesPermissions;
     }
 
     /**
@@ -142,16 +188,16 @@ public class InitialDataLoader implements ApplicationListener<ApplicationReadyEv
      * @return user
      */
     @Transactional
-    protected User createUserIfNotFound(Set<Role> roles, Department dept) {
-        User user = userRepository.findByEmail("admin@stransact.com");
+    protected User createUserIfNotFound(String email, String firstName, String lastName, String staffId, Set<Role> roles, Department dept) {
+        User user = userRepository.findByEmail(email);
         if (user == null) {
             user = new User();
-            user.setFirstName("Admin");
-            user.setLastName("Admin");
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
             user.setPassword(passwordEncoder.encode("testpassword"));
-            user.setEmail("admin@stransact.com");
+            user.setEmail(email);
             user.setGender("male");
-            user.setStaffId("1");
+            user.setStaffId(staffId);
             user.setDepartment(dept.getId());
             user.setRoles(roles);
             user = userRepository.save(user);
