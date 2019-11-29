@@ -188,7 +188,7 @@ class UserDetailsScreen extends Component {
               </View>
             </View>
           }
-          {this.props.userProps.loading || this.props.allDepartmentsProps.loading &&
+          {this.props.userProps.loading || this.props.allDepartmentsProps.loading || this.props.allRolesProps.loading &&
             <View
               style={{ justifyContent: 'center', flex: 1, position: 'absolute' }}>
               <ActivityIndicator

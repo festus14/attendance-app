@@ -1,4 +1,4 @@
-import { SET_TOKEN, AUTH_LOADING } from '../../actions/types';
+import { SET_TOKEN, AUTH_LOADING, AUTH_ERROR } from '../../actions/types';
 
 const initialState = {
     token: null,
@@ -6,7 +6,7 @@ const initialState = {
     expiry: null,
     refreshToken: null,
     loading: false,
-    success: false
+    success: false,
 };
 
 export default function(state = initialState, action) {
@@ -16,15 +16,20 @@ export default function(state = initialState, action) {
                 ...state,
                 ...action.payload,
                 loading: false,
-                success: true
+                success: true,
             };
         case AUTH_LOADING:
             return {
                 ...state,
                 loading: true,
-                success: false
+                success: false,
+            };
+        case AUTH_ERROR:
+            return {
+                ...state,
+                loading: false,
             };
         default:
             return state;
     }
-};
+}

@@ -22,8 +22,8 @@ const mapDispatchToProps = dispatch => ({
 
 
 const mapStateToProps = state => ({
-  auth: state.authReducer
-})
+  auth: state.authReducer,
+});
 
 class LoginScreen extends Component {
   static navigationOptions = {
@@ -84,10 +84,16 @@ class LoginScreen extends Component {
     };
 
     let error = await this.props.logIn(data);
-    if (error) {
-      this.openError(error)
-    } else {
-      this.props.navigation.navigate('App');
+
+    switch (error) {
+      case '':
+        this.props.navigation.navigate('App');
+      case 'INVALID_CREDENTIALS':
+        this.openError('Email and password does not match');
+      case 'USER_NOT_FOUND':
+        this.openError('Email does not exist');
+      default:
+        this.openError('Unknown error occured')
     }
   };
 
@@ -114,9 +120,9 @@ class LoginScreen extends Component {
             source={require('../../assets/icons/Logo2.png')}
           />
         </View>
-        <Text>{error}</Text>
+        <Text style={{ color: 'red' }}>{error}</Text>
         <Text style={styles.title}>
-          {displayPassword ? 'Sign In' : 'Forgot Password'}
+          Sign In
         </Text>
         <View style={styles.InputContainer}>
           <TextInput

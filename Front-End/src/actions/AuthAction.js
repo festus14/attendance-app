@@ -1,4 +1,4 @@
-import { SET_TOKEN, AUTH_LOADING, RESET_STATE } from './types';
+import {SET_TOKEN, AUTH_LOADING, RESET_STATE, AUTH_ERROR} from './types';
 import axios from 'axios';
 import { APIURL } from '../utility/config';
 import RNSecureKeyStore, { ACCESSIBLE } from 'react-native-secure-key-store';
@@ -10,12 +10,14 @@ export const logIn = ({ email, password }) => async dispatch => {
     try {
         let res = await axios.post(`${APIURL}auth/`, { email, password });
         if (!res.data.success) {
+            await dispatch(stopLoading());
             return res.data.message;
         }
         await dispatch(setAuth(res.data.data));
         return '';
     } catch (error) {
-        return error.data.message;
+        await dispatch(stopLoading());
+        return error.response.data.message;
     }
 };
 
@@ -48,17 +50,18 @@ export const logOut = () => async dispatch => {
         });
 
         if (!res.data.success) {
+            await dispatch(stopLoading())
             return res.data.message;
         }
         else {
-            dispatch(resetState());
             await dispatch(setAuth({}));
+            dispatch(resetState());
             NavigationService.navigate('Auth');
         }
 
         return '';
     } catch (error) {
-
+        await dispatch(stopLoading());
         return error.response ? error.response.data.message : error;
     }
 };
@@ -135,3 +138,7 @@ export const getUserInfo = userId => async dispatch => {
 const resetState = () => ({
     type: RESET_STATE
 })
+
+const stopLoading = () => ({
+  type: AUTH_ERROR,
+});
