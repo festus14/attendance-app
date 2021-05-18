@@ -17,7 +17,7 @@
         "react-native": "0.61.3",
         "react-native-camera": "^3.9.0",
         "react-native-drawer": "^2.5.1",
-        "react-native-fast-image": "^7.0.2",
+        "react-native-fast-image": "^8.3.0",
         "react-native-gesture-handler": "^1.5.2",
         "react-native-navigator": "^0.4.2",
         "react-native-paper": "^3.2.1",
